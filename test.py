@@ -37,6 +37,62 @@
 # CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1         --data-split=test --store-dir=20201008_arun_2_nolrscheduler_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2_nolrscheduler/best_model.pt   --architecture=unetsar --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
 # CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2         --data-split=test --store-dir=20201008_arun_2_nolrscheduler_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2_nolrscheduler/best_model.pt   --architecture=unetsar --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
 
+# Best test results network  ## 2020-10-10 - Expt1: No scheduling with 1e-4 learning rate with my UNet
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_C1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_C2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C3_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_C3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C4_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_C4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C5_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_C5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_T1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_T2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T3_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_T3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T4_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_T4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T5_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_T5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
+# Best test results network  ## 2020-10-10 - Expt2: L1+FFTLoss
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_C1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_C2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C3_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_C3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C4_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_C4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C5_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_C5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_T1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_T2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T3_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_T3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T4_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_T4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T5_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_T5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2_1024         --data-split=test --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
+## 2020-10-10 - Expt3: 2DCNN FastTimeFirst
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_C1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_C2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C3_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_C3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C4_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_C4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C5_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_C5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_T1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_T2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T3_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_T3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T4_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_T4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T5_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_T5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
+## 2020-10-10 - Expt3: 2DCNN SlowTimeFirst
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_C1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_C2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C3_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_C3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C4_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_C4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_C5_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_C5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_T1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_T2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T3_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_T3  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T4_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_T4  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_T5_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_T5  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
 import pdb
 import os, sys, glob
 import argparse, pathlib
@@ -52,17 +108,18 @@ from torch.cuda.amp import GradScaler, autocast
 
 # U-Net related imports
 # from unet import GeneratorUnet1_1, GeneratorUnet1_1_FAIR, UNetSeparable_64_uros, UNetSeparable_64_uros_small, UNetSeparable_64_uros_small_5, UNetSeparable_64, UNetSeparable_16, visualize_neurons, UNet1Dk5s2, UNet1Dk5s2_siren, UNet1Dk15s4
-from models import UNetSAR
+from models import UNetSAR, UNetSAR_Arun, UNet2DSAR_fastfirst_3, UNet2DSAR_slowfirst_3
 
 # Loss Function Imports
 # from utils import DiceCoeffLoss, RMSELoss, LSDLoss
+from utils import L1andFFTLoss
 
 # Tensorboard import
 from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real
+from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -262,10 +319,28 @@ def create_datasets(params):
         chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_inverted.pkl", invert_waveforms=True)
     elif params['dataset']=='arun_2':
         chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_2.pkl")
+    elif params['dataset']=='arun_3':
+        chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_3.pkl", line_length=1024)        
     elif params['dataset']=='real':
         chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl")
+    elif params['dataset']=='real_1024':
+        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl", line_length=1024)
+    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs':
+        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl")
+    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs_1024':
+        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl", line_length=1024)
     elif params['dataset'] in ['real_C1', 'real_C2', 'real_C3', 'real_C4', 'real_C5', 'real_T1', 'real_T2', 'real_T3', 'real_T4', 'real_T5', 'real_G1', 'real_G2']:
         chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
+    elif params['dataset'] in ['real_C1_1024', 'real_C2_1024', 'real_C3_1024', 'real_C4_1024', 'real_C5_1024', 'real_T1_1024', 'real_T2_1024', 'real_T3_1024', 'real_T4_1024', 'real_T5_1024', 'real_G1_1024', 'real_G2_1024']:
+        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl", line_length=1024)
+    elif params['dataset']=='arun_2D':
+        chosen_dataset   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = f"{params['data_split']}_set_arun_2D.pkl")
+    elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':
+        chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs_2D.pkl")
+    elif params['dataset']=='arun_2D_realtestdata':
+        chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_2D.pkl")
+    elif params['dataset'] in ['real_C1_2D', 'real_C2_2D', 'real_C3_2D', 'real_C4_2D', 'real_C5_2D', 'real_T1_2D', 'real_T2_2D', 'real_T3_2D', 'real_T4_2D', 'real_T5_2D', 'real_G1_2D', 'real_G2_2D']:
+        chosen_dataset = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
     return chosen_dataset
 
 # -------------------------------------------------------------------------------------------------
@@ -332,8 +407,8 @@ def parse_args(args):
                         help='Whether to save val and test outputs in mat files')
     parser.add_argument('--checkpoint', type=pathlib.Path, required=True,
                         help='Path to an existing checkpoint. Required for testing.')
-    parser.add_argument('--architecture', choices=['unetsar'], default='unetsar', type=str,
-                        help='unetsar|...')
+    parser.add_argument('--architecture', choices=['unetsar', 'unetsar_arun', 'unet2d_fastfirst_3', 'unet2d_slowfirst_3'], default='unetsar_arun', type=str,
+                        help='unetsar|unetsar_arun|unet2d_fastfirst_3|unet2d_slowfirst_3|...')
     ## Parameters to update less often
     parser.add_argument('--no-visualization', action='store_true', default=False,
                         help='Disables visualization of the outputs; Also adjusts display_data step size to prevent errors')
@@ -380,6 +455,12 @@ def build_model(parsed_args, device):
     # Initialize the neural network model
     if parsed_args.architecture == 'unetsar':        
         g_net = UNetSAR()
+    elif parsed_args.architecture == 'unetsar_arun':
+        g_net = UNetSAR_Arun()
+    elif parsed_args.architecture == 'unet2d_fastfirst_3':
+        g_net = UNet2DSAR_fastfirst_3()
+    elif parsed_args.architecture == 'unet2d_slowfirst_3':
+        g_net = UNet2DSAR_slowfirst_3()
     else:
         print('Unacceptable input arguments when building the network')
         sys.exit(0)
@@ -410,7 +491,7 @@ def load_model(parsed_args, device):
 def initialize_loss_criterion(params):
     # Options for possible loss functions
     # loss_dict = {'dscloss':DiceCoeffLoss(), 'maeloss': torch.nn.L1Loss(), 'mseloss': torch.nn.MSELoss(), 'rmseloss': RMSELoss(), 'lsdloss': LSDLoss(), 'bceloss': torch.nn.BCELoss()}
-    loss_dict = {'l1loss': torch.nn.L1Loss(), 'smoothl1loss': torch.nn.SmoothL1Loss(), 'mseloss': torch.nn.MSELoss()}
+    loss_dict = {'l1loss': torch.nn.L1Loss(), 'smoothl1loss': torch.nn.SmoothL1Loss(), 'mseloss': torch.nn.MSELoss(), 'l1andfftloss': L1andFFTLoss}
     # NOTE: BCEWithLogitsLoss combines a Sigmoid layer and the BCELoss in one single class. This version is more numerically stable than using a plain Sigmoid followed by a BCELoss as, by combining the operations into one layer, we take advantage of the log-sum-exp trick for numerical stability.
     # So use it in general when possible...
     
@@ -422,7 +503,7 @@ def initialize_loss_criterion(params):
     #     criterion_g = loss_dict[params['criterion_g']]
 
     # Moving it to the GPU - not really required except for stateful losses as stated in https://discuss.pytorch.org/t/move-the-loss-function-to-gpu/20060
-    criterion_g.to(params['device'])
+    # criterion_g.to(params['device'])
 
     return criterion_g
 

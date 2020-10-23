@@ -47,7 +47,10 @@ def eval_net(g_net, criterion_g, params, val_or_test_string, val_or_test_loader)
 
                 # Obtain the clean and degraded results and loss values
                 # tot_PSNR += psnr_loss(preds, target_output).item() * input_data.shape[0] # mean * number of samples # Occasionally throwing an erorr, got annoyed, setting it to 0
-                tot_loss +=         criterion_g(preds.view(-1), target_output.view(-1)).item() * input_data.shape[0]                # mean * number of samples
+                if params['criterion_g'] == 'l1andfftloss':                    
+                    tot_loss +=         criterion_g(input_data, preds, target_output).item() * input_data.shape[0]                  # mean * number of samples
+                else:
+                    tot_loss +=         criterion_g(preds.view(-1), target_output.view(-1)).item() * input_data.shape[0]            # mean * number of samples
                 tot_l1loss +=       criterion_l1loss(preds.view(-1), target_output.view(-1)).item() * input_data.shape[0]           # mean * number of samples
                 tot_smoothl1loss += criterion_smoothl1loss(preds.view(-1), target_output.view(-1)).item() * input_data.shape[0]     # mean * number of samples
                 tot_MSELoss +=      criterion_mse(preds.view(-1), target_output.view(-1)).item() * input_data.shape[0]              # mean * number of samples
@@ -97,7 +100,14 @@ def inner_loop_fn(idx, input_data, preds, target_output, params, val_or_test_str
         os.makedirs(os.path.join(params['results_dir'], val_or_test_string), exist_ok=True)
         
         # 1 - Calculate metrics, plot the image and write it to file
-        SNR_meas, SNR_pred, SNR_gain = snr_akshay(target_output, input_data, preds)
+        if len(target_output.shape)==2: #1xd
+            SNR_meas, SNR_pred, SNR_gain = snr_akshay(target_output, input_data, preds)
+        else: #1xslowTimexd
+            SNR_meas, SNR_pred, SNR_gain = snr_akshay(target_output[:,0,:], input_data[:,0,:], preds[:,0,:])
+            target_output = target_output[:,0,:]
+            input_data = input_data[:,0,:]
+            preds = preds[:,0,:]
+            
         plt.figure()
         # TODO: generalize it to images with more than 1 column
         plt.plot(np.squeeze(target_output), 'b-', label='ground truth')

@@ -1,4 +1,4 @@
-import torch
+import torch, pdb
 import torch.nn
 from torch.autograd import Function, Variable
 import math
@@ -87,3 +87,47 @@ def snr_loss(input, target):
             s = s + return_val
             count += 1
     return s / count
+
+# NEED TO IMPLEMENT CUSTOM BACKWARD IF GOING THE BELOW ROUTE... think just defining a function would work
+# # Defining a class to handle PSNR loss evaluation for a batch of data
+# class L1andFFTLoss(Function):
+#     def __init__(self):
+#         super(L1andFFTLoss, self).__init__()
+
+#     @staticmethod
+#     def forward(self, input, prediction, target):
+
+#         # pdb.set_trace()
+#         signal_threshold = 1e-4 # TODO: Set manually
+
+#         # torch.irfft(torch.rfft(imgs, signal_ndim=2, normalized=True), signal_ndim=2, normalized=True, signal_sizes=imgs.shape[-2:])==imgs
+#         input_fft = torch.rfft(input, signal_ndim=1, normalized=True)
+#         prediction_fft = torch.rfft(prediction, signal_ndim=1, normalized=True)
+#         target_fft = torch.rfft(target, signal_ndim=1, normalized=True)
+
+#         mask = torch.zeros_like(input_fft)
+#         mask[torch.where(torch.abs(input_fft)>signal_threshold)] = 1.0 # TODO: Check if gradient is backpropagated
+
+#         loss_val_1 = torch.nn.L1Loss()(prediction, target)
+#         loss_val_2 = torch.mean(torch.mul(mask, torch.abs(target_fft-prediction_fft)))
+#         loss_val = loss_val_1 + 10*loss_val_2 
+
+#         return loss_val
+
+def L1andFFTLoss(input, prediction, target):
+    """Apply combination of l1 loss in time and l1 loss in fourier domain for batches"""
+    signal_threshold = 1e-4 # TODO: Set manually
+
+    # torch.irfft(torch.rfft(imgs, signal_ndim=2, normalized=True), signal_ndim=2, normalized=True, signal_sizes=imgs.shape[-2:])==imgs
+    input_fft = torch.rfft(input, signal_ndim=1, normalized=True)
+    prediction_fft = torch.rfft(prediction, signal_ndim=1, normalized=True)
+    target_fft = torch.rfft(target, signal_ndim=1, normalized=True)
+
+    mask = torch.zeros_like(input_fft)
+    mask[torch.where(torch.abs(input_fft)>signal_threshold)] = 1.0 # TODO: Check if gradient is backpropagated
+
+    loss_val_1 = torch.nn.L1Loss()(prediction, target)
+    loss_val_2 = torch.mean(torch.mul(mask, torch.abs(target_fft-prediction_fft)))
+    loss_val = loss_val_1 + 10*loss_val_2 
+
+    return loss_val

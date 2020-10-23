@@ -1,7 +1,8 @@
-import os, pickle, random
+import os, pickle, random, pdb
 import numpy as np
 import scipy.io as sio
 import torch
+import sklearn.preprocessing
 
 class SARDataGenerator(object):
 
@@ -172,6 +173,42 @@ def generate_freq_measurements(signals, missing_rate, energy_band=(380e6, 2080e6
 
     return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]
 
+def generate_freq_measurements_2D(signals, missing_rate, energy_band=(380e6, 2080e6), sampling_period=2.668e-11):
+    """
+    Inputs:
+        `signals` - Ground Truth SAR signals measured at an aperture (num_signals x 1 x slowTimeDim x d numpy array)
+        `missing_rate` - fraction of spectrum that is missing (float)
+    Keyword Inputs:
+        `energy_band` -  2-tuple containing start and end frequencies for the spectrum of the signals
+                         generated from the template (tuple of floats)
+        `sampling_period` - sampling period in seconds (float)
+    Outputs:
+        array containing all corrupted signals (num_signals x 1 x slowTimeDim x d numpy array)
+    """
+    num_signals, _, slowTimeDim, dim = signals.shape
+    sampling_freq = 1. / (sampling_period + 1e-32)
+    df = sampling_freq / dim
+
+    bandwidth = energy_band[1] - energy_band[0]
+    missing_bandwidth = round(bandwidth * missing_rate)
+    f_start = energy_band[0] + round(0.1*bandwidth)
+    f_end = f_start + missing_bandwidth
+    f_start_idx = np.int_(np.ceil(f_start / df))
+    f_end_idx = np.int_(np.ceil(f_end / df))
+
+    measurements = []
+    for i in range(num_signals):
+        temp_store = np.zeros((slowTimeDim, dim))
+        for j in range(slowTimeDim):
+            spectrum = np.fft.fft(signals[i,0,j,:])
+            corrupted_spectrum = np.copy(spectrum)
+            corrupted_spectrum[f_start_idx:f_end_idx] = 0.0+0.0j
+            corrupted_spectrum[dim // 2 + 1: dim - 1] = np.conj(corrupted_spectrum[dim // 2 - 1: 1: -1])
+            temp_store[j] = np.fft.ifft(corrupted_spectrum).real
+        measurements.append(temp_store[np.newaxis, :, :].copy())
+
+    return np.concatenate(measurements, axis=0)[:,np.newaxis,:,:]
+
 def generate_freq_measurements_modified(signals, missing_rate, energy_band=(0,80)):
     """
     Inputs:
@@ -212,7 +249,7 @@ def create_dataset_akshay(params, dataset_size=50000, dataset_name='train_set_ak
     num_clusters=3
     normalize_signals='l2'
     missing_rate = 0.50
-    
+
     online_or_fixed = 'fixed'                               # Online doesn't work (and I'm not sure I care enough to get it working...)
 
     # if hasattr(conf, 'trainset_path') is False:
@@ -250,11 +287,11 @@ def create_dataset_akshay(params, dataset_size=50000, dataset_name='train_set_ak
     
     return gen_dataset
 
-def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun.pkl', invert_waveforms=False):
+def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun.pkl', invert_waveforms=False, line_length = 1000):
     if '_set_arun.pkl' in dataset_name:
         num_files = 500
         dataset_dir = '20200903_data'
-    elif '_set_arun_2.pkl' in dataset_name:
+    elif '_set_arun_2.pkl' in dataset_name or '_set_arun_3.pkl' in dataset_name:
         num_files = 5000
         dataset_dir = '20200923_data'
 
@@ -271,7 +308,7 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
 
         # CASE 0 - Generate (50000, 1, 1000) data to use as a replacement for Akshay's training data
         # save_name = 'sar_dataset_50_max_sparse_10_uniform.pkl'
-        signals = np.zeros((dataset_size, 1, 1000))
+        signals = np.zeros((dataset_size, 1, line_length))
 
         for idx in range(dataset_size):
             print(idx)
@@ -284,7 +321,7 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
                 random.seed(idx+13371337*2)                
             file_idx = random.randint(1,num_files) # Inclusive of both end points
             file_name = f'{file_idx}.mat'
-            data = sio.loadmat(os.path.join('/data/arun/projects/sarnet/data', dataset_dir, file_name))['data'][300:1300,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set
+            data = sio.loadmat(os.path.join('/data/arun/projects/sarnet/data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
 
             # Choose a certain column of it
             col_idx = random.randint(0,data.shape[1]-1)
@@ -317,51 +354,138 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
 
             signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
 
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
     gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
-    
-    print('Loaded Training Dataset')           
+    print('Loaded Training Dataset')
 
     return gen_dataset
 
-def create_dataset_real(params, dataset_name='test_set_real.pkl'):
-    if '_set_real.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C3.mat', '/data/arun/projects/sarnet/real_sar_data/C4.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C5.mat', '/data/arun/projects/sarnet/real_sar_data/G1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/G2.mat', '/data/arun/projects/sarnet/real_sar_data/T1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T2.mat', '/data/arun/projects/sarnet/real_sar_data/T3.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T4.mat', '/data/arun/projects/sarnet/real_sar_data/T5.mat']
-    elif '_set_real_C1.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat']
-    elif '_set_real_C2.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C2.mat']
-    elif '_set_real_C3.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C3.mat']
-    elif '_set_real_C4.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C4.mat']
-    elif '_set_real_C5.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C5.mat']
-    elif '_set_real_T1.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T1.mat']
-    elif '_set_real_T2.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T2.mat']
-    elif '_set_real_T3.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T3.mat']
-    elif '_set_real_T4.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T4.mat']
-    elif '_set_real_T5.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T5.mat']
-    elif '_set_real_G1.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G1.mat']
-    elif '_set_real_G2.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G2.mat']
+def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_arun_2D.pkl', invert_waveforms=False):
+    num_files = 5000
+    dataset_dir = '20200923_data'
+
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
         ROOT_DIR = os.getcwd()
         save_dir = os.path.join(ROOT_DIR, 'data')
 
         save_dict = {}
 
-        dim = 1000
+        save_dict['max_sparse'] = 10 # TODO: Set in the simulation
+        missing_rate = 0.50
+        save_dict['missing_rate'] = missing_rate
+        save_dict['sparsity_pattern'] = 'uniform' # ish
+
+        # CASE 0 - Generate (50000, 1, 1000) data to use as a replacement for Akshay's training data
+        # save_name = 'sar_dataset_50_max_sparse_10_uniform.pkl'
+        slow_time_dim = 3
+        line_length = 1024
+        signals = np.zeros((dataset_size, 1, slow_time_dim, line_length))
+
+        for idx in range(dataset_size):
+            print(idx)
+            # Choose file name to read after seeding the random number generator
+            if 'train' in dataset_name:
+                random.seed(idx)
+            elif 'val' in dataset_name:
+                random.seed(idx+13371337)
+            elif 'test' in dataset_name:
+                random.seed(idx+13371337*2)                
+            file_idx = random.randint(1,num_files) # Inclusive of both end points
+            file_name = f'{file_idx}.mat'
+            data = sio.loadmat(os.path.join('/data/arun/projects/sarnet/data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
+
+            # Choose column spacing
+            decision_var = random.random()
+            # Choose a certain subset of columns
+            if line_length<=0.5: # with probability 0.5 - spacing of 1 element between lines
+                col_idx = random.randint(0,data.shape[1]-3)
+                signals[idx,0] = data[:,col_idx:col_idx+3].T
+            elif line_length<=0.8: # with probability 0.3 - spacing of 2 elements between lines
+                col_idx = random.randint(0,data.shape[1]-5)
+                signals[idx,0] = data[:,[col_idx,col_idx+2,col_idx+4]].T
+            else: # with probability 0.2 - spacing of 4 elements between lines
+                col_idx = random.randint(0,data.shape[1]-9)
+                signals[idx,0] = data[:,[col_idx,col_idx+4,col_idx+8]].T            
+            if invert_waveforms:
+                if random.random()>0.5:
+                    signals[idx,0] = -signals[idx,0]
+                else:
+                    signals[idx,0] = signals[idx,0]
+            else:
+                signals[idx,0] = signals[idx,0]
+
+            # Normalize by a random multiplier of the l2-norm
+            multiplier = np.mean(np.linalg.norm(signals[idx,0], 2, axis=1)) # Mean l2 norm of the 3 columns, each of which should be really close to the other...
+            # random_multiplier = random.random()*0.5 + 0.25 # Changed this
+            random_multiplier = random.random() + 0.25
+            signals[idx,0] = signals[idx,0] * 1. / (random_multiplier * multiplier)
+
+        measurements = generate_freq_measurements_2D(signals, missing_rate)
+
+        # save_dict['signals'], save_dict['measurements'] = self.generate_batch(dataset_size, missing_rate=missing_rate)
+        save_dict['signals'], save_dict['measurements'] = signals, measurements
+
+        with open(os.path.join(save_dir, dataset_name), 'wb') as f:
+            pickle.dump(save_dict,f)
+
+        signals, measurements = torch.Tensor(signals), torch.Tensor(measurements)
+    else:
+        with open(os.path.join('data', dataset_name), 'rb') as f:
+            dataset = pickle.load(f)
+
+            signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Training Dataset')
+
+    return gen_dataset
+
+def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 1000):
+
+    # pdb.set_trace()
+    if '_set_real.pkl' in dataset_name or '_set_real_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat',
+        '/data/arun/projects/sarnet/real_sar_data/C3.mat', '/data/arun/projects/sarnet/real_sar_data/C4.mat',
+        '/data/arun/projects/sarnet/real_sar_data/C5.mat', '/data/arun/projects/sarnet/real_sar_data/G1.mat',
+        '/data/arun/projects/sarnet/real_sar_data/G2.mat', '/data/arun/projects/sarnet/real_sar_data/T1.mat',
+        '/data/arun/projects/sarnet/real_sar_data/T2.mat', '/data/arun/projects/sarnet/real_sar_data/T3.mat',
+        '/data/arun/projects/sarnet/real_sar_data/T4.mat', '/data/arun/projects/sarnet/real_sar_data/T5.mat']
+    elif '_set_real_onlyfirsttwoseqs.pkl' in dataset_name or '_set_real_onlyfirsttwoseqs_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat']        
+    elif '_set_real_C1.pkl' in dataset_name or '_set_real_C1_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat']
+    elif '_set_real_C2.pkl' in dataset_name or '_set_real_C2_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C2.mat']
+    elif '_set_real_C3.pkl' in dataset_name or '_set_real_C3_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C3.mat']
+    elif '_set_real_C4.pkl' in dataset_name or '_set_real_C4_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C4.mat']
+    elif '_set_real_C5.pkl' in dataset_name or '_set_real_C5_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C5.mat']
+    elif '_set_real_T1.pkl' in dataset_name or '_set_real_T1_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T1.mat']
+    elif '_set_real_T2.pkl' in dataset_name or '_set_real_T2_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T2.mat']
+    elif '_set_real_T3.pkl' in dataset_name or '_set_real_T3_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T3.mat']
+    elif '_set_real_T4.pkl' in dataset_name or '_set_real_T4_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T4.mat']
+    elif '_set_real_T5.pkl' in dataset_name or '_set_real_T5_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T5.mat']
+    elif '_set_real_G1.pkl' in dataset_name or '_set_real_G1_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G1.mat']
+    elif '_set_real_G2.pkl' in dataset_name or '_set_real_G2_1024.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G2.mat']
+    if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
+        ROOT_DIR = os.getcwd()
+        save_dir = os.path.join(ROOT_DIR, 'data')
+
+        save_dict = {}
+        
+        dim = line_length
         missing_rate = 0.50
         normalize_signals='l2'
         save_dict['missing_rate'] = missing_rate
@@ -398,16 +522,109 @@ def create_dataset_real(params, dataset_name='test_set_real.pkl'):
             pickle.dump(save_dict,f)
 
         signals, measurements = torch.Tensor(signals), torch.Tensor(measurements)
-        print(f"Dimensions of signals tensor is {signals.shape}")
-        print(f"Dimensions of measurements tensor is {measurements.shape}")        
     else:
         with open(os.path.join('data', dataset_name), 'rb') as f:
             dataset = pickle.load(f)
 
             signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
-            print(f"Dimensions of signals tensor is {signals.shape}")
-            print(f"Dimensions of measurements tensor is {measurements.shape}")
 
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    
+    print('Loaded Real Dataset')           
+
+    return gen_dataset
+
+def create_dataset_real_2D(params, dataset_name='test_set_real_2D.pkl'):
+
+    if '_set_real_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat',
+        '/data/arun/projects/sarnet/real_sar_data/C3.mat', '/data/arun/projects/sarnet/real_sar_data/C4.mat',
+        '/data/arun/projects/sarnet/real_sar_data/C5.mat', '/data/arun/projects/sarnet/real_sar_data/G1.mat',
+        '/data/arun/projects/sarnet/real_sar_data/G2.mat', '/data/arun/projects/sarnet/real_sar_data/T1.mat',
+        '/data/arun/projects/sarnet/real_sar_data/T2.mat', '/data/arun/projects/sarnet/real_sar_data/T3.mat',
+        '/data/arun/projects/sarnet/real_sar_data/T4.mat', '/data/arun/projects/sarnet/real_sar_data/T5.mat']
+    elif '_set_real_onlyfirsttwoseqs_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat']        
+    elif '_set_real_C1_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat']
+    elif '_set_real_C2_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C2.mat']
+    elif '_set_real_C3_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C3.mat']
+    elif '_set_real_C4_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C4.mat']
+    elif '_set_real_C5_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C5.mat']
+    elif '_set_real_T1_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T1.mat']
+    elif '_set_real_T2_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T2.mat']
+    elif '_set_real_T3_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T3.mat']
+    elif '_set_real_T4_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T4.mat']
+    elif '_set_real_T5_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T5.mat']
+    elif '_set_real_G1_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G1.mat']
+    elif '_set_real_G2_2D.pkl' in dataset_name:
+        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G2.mat']
+    if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
+        ROOT_DIR = os.getcwd()
+        save_dir = os.path.join(ROOT_DIR, 'data')
+
+        save_dict = {}
+
+        slow_time_dim = 3
+        line_length = 1024
+        dim = line_length
+        missing_rate = 0.50
+        normalize_signals='l2'
+        save_dict['missing_rate'] = missing_rate
+        save_dict['normalize_signals'] = normalize_signals
+        save_dict['dim'] = dim
+        EPS = 1e-32
+        
+        temp_list = []
+        for real_file_name in real_file_names:
+            real_signals = sio.loadmat(real_file_name)['Data']
+            
+            if normalize_signals == 'max':
+                multiplier = np.max(np.abs(real_signals), axis=0) + EPS
+                real_signals = real_signals * (1./multiplier)
+            elif normalize_signals == 'l2':
+                multiplier = np.linalg.norm(real_signals, 2, axis=0) + EPS
+                real_signals = real_signals * (1./multiplier)
+            real_signals = real_signals.T
+
+            if real_signals.shape[-1] != dim:
+                padding = dim - real_signals.shape[-1]
+                n_signals = real_signals.shape[0]
+                # real_signals = np.concatenate([real_signals, np.zeros((n_signals,1,padding))],axis=-1)
+                real_signals = np.concatenate([np.zeros((n_signals,padding)), real_signals],axis=-1)
+            for j in range(0, real_signals.shape[0]-slow_time_dim, 1):
+                temp_list.append(real_signals[j:j+3,:][np.newaxis, :, :])
+        
+        signals = np.concatenate(temp_list, axis=0)[:,np.newaxis,:,:]
+        measurements = generate_freq_measurements_2D(signals, missing_rate)
+
+        # save_dict['signals'], save_dict['measurements'] = self.generate_batch(dataset_size, missing_rate=missing_rate)
+        save_dict['signals'], save_dict['measurements'] = signals, measurements
+
+        with open(os.path.join(save_dir, dataset_name), 'wb') as f:
+            pickle.dump(save_dict,f)
+
+        signals, measurements = torch.Tensor(signals), torch.Tensor(measurements)
+    else:
+        with open(os.path.join('data', dataset_name), 'rb') as f:
+            dataset = pickle.load(f)
+
+            signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
     gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
     
     print('Loaded Real Dataset')           

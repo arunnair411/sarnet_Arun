@@ -26,6 +26,46 @@
 # TO RESUME
 # CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_2_realtestdata   --store-dir=20201008_arun_2_nolrscheduler_largebatch    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_2_nolrscheduler_largebatch/model_epoch135.pt   --architecture=unetsar --criterion-g=l1loss --test-batch-size=1000 --batch-size=64 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 
+## 2020-10-10
+# Expt 1 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) - previous best val score on 1st two sequences - best val of 36.88 @ step <200 (sim) and best test of 12.13 @ step 115 - 200 epochs suffice 
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results                                                                                                  --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt    --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) - previous best val score on 1st two sequences - best val of 45.39 @ step 733 (sim) and best test of 10.87 @ step 28
+# BETTER LOSS PERFORMANCE ON SIMULATED DATA!!! Slightly worse on real data...
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss    --save-test-val-results                                                                                                          --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs_fftloss/best_model.pt    --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 3 - No scheduling with 1e-4 learning and testing on real data (1st two sequences) - 2D (with 3 slow time columns) - fasttime first - best val of 45.1 @ step 801 (sim) and best test of 11.94 @ step 96
+# SLIGHTLY BETTER THAN EXPT 4 IN BOTH SIM AND TEST
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_2D_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst  s  --save-test-val-results                                                                                                                  --architecture=unet2d_fastfirst_3 --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_2D_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_fasttimefirst/best_model.pt     --architecture=unet2d_fastfirst_3 --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 4 - No scheduling with 1e-4 learning and testing on real data (1st two sequences) - 2D (with 3 slow time columns) - slowtime first - best val of 43.14 @ step 801 (sim) and best test of 10.3 @ step 45
+# SLIGHT IMPROVEMENT IN VAL SNR, SLIGHT DECREASE IN TEST SNR
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_2D_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst    --save-test-val-results                                                                                                                  --architecture=unet2d_slowfirst_3 --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_2D_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt     --architecture=unet2d_slowfirst_3 --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 2020-10-23
+# Sweeping 4 values of L1andFFTLoss - Expt 0 (previous day, default): (1,10), Expt1: (1, 50)  Expt2: (1, 5), Expt3:(1,1),  Expt4:(1,0.5) (Case1-4 below)
+# Expt 1 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) (manually editing combo weights)
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,50    --save-test-val-results                                                                                                             --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,50    --save-test-val-results --resume --checkpoint=checkpoints/20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,50/best_model.pt  --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) (manually editing combo weights)
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,5    --save-test-val-results                                                                                                              --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,5    --save-test-val-results --resume --checkpoint=checkpoints/20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,5/best_model.pt    --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 3 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) (manually editing combo weights)
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,1    --save-test-val-results                                                                                                              --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,1    --save-test-val-results --resume --checkpoint=checkpoints/20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,1/best_model.pt    --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 4 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) (manually editing combo weights)
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,05    --save-test-val-results                                                                                                             --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,05    --save-test-val-results --resume --checkpoint=checkpoints/20201023_arun_3_realtestdata_onlyfirsttwoseqs_fftloss_1,05/best_model.pt  --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+
+
 import time
 import numpy as np
 import random
@@ -48,17 +88,18 @@ from torch.cuda.amp import GradScaler, autocast
 
 # U-Net related imports
 # from unet import GeneratorUnet1_1, GeneratorUnet1_1_FAIR, UNetSeparable_64_uros, UNetSeparable_64_uros_small, UNetSeparable_64_uros_small_5, UNetSeparable_64, UNetSeparable_16, visualize_neurons, UNet1Dk5s2, UNet1Dk5s2_siren, UNet1Dk15s4
-from models import UNetSAR
+from models import UNetSAR, UNetSAR_Arun, UNet2DSAR_fastfirst_3, UNet2DSAR_slowfirst_3
 
 # Loss Function Imports
 # from utils import DiceCoeffLoss, RMSELoss, LSDLoss
+from utils import L1andFFTLoss
 
 # Tensorboard import
 from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real
+from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -89,7 +130,7 @@ from utils import eval_net, write_imgs
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# NOTE: To set GPU Visibility from inside the code
+# NOTE: To set GPU Visibilisty from inside the code
 # os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"   # see issue #152
 # os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
@@ -126,7 +167,7 @@ def train_epoch(params, epoch, g_net, criterion_g, train_loader, optimizer_G, sc
         # Copy the data to GPU
         input_data = input_data.to(params['device'])
         target_output = target_output.to(params['device'])
-        target_output_flat = target_output.view(-1) # Flatten (i.e.) vectorize the data
+        # target_output_flat = target_output.view(-1) # Flatten (i.e.) vectorize the data
 
         # Zero the parameter gradients
         optimizer_G.zero_grad()
@@ -135,14 +176,17 @@ def train_epoch(params, epoch, g_net, criterion_g, train_loader, optimizer_G, sc
         with autocast(enabled=False): # Had to disable it since it made performance workse surprisingly
             preds = g_net(input_data)            
             # preds = torch.sigmoid(preds) # NOTE: Don't need the sigmoid... just removing it in favor of a plain conv like Dung did...
-            preds_flat = preds.view(-1)
+            # preds_flat = preds.view(-1)
 
             # Calculate the loss for the batch
             # if params['criterion_g']=='lsdloss': # Here, can't use flattened data
             #     loss = criterion_g(preds, target_output)
             # else: # Otherwise, needs flattened data
             #     loss = criterion_g(preds_flat, target_output_flat)
-            loss = criterion_g(preds_flat, target_output_flat)
+            if params['criterion_g'] == 'l1andfftloss':
+                loss = criterion_g(input_data, preds, target_output)
+            else:                
+                loss = criterion_g(preds, target_output)
                 
         # # Compute the gradients and take a step
         # if APEX_AVAILABLE:
@@ -273,11 +317,39 @@ def create_datasets(params):
     elif params['dataset']=='arun_2':
         train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
-        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun_2.pkl')                
+        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun_2.pkl')
+    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
     elif params['dataset']=='arun_2_realtestdata':
         train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
         test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
+    elif params['dataset']=='arun_3':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
+        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun_3.pkl', line_length = 1024)
+    elif params['dataset']=='arun_3_realtestdata_onlyfirsttwoseqs':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl', line_length=1024)
+    elif params['dataset']=='arun_3_realtestdata':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl', line_length=1024)
+    elif params['dataset']=='arun_2D':
+        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
+        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
+        test_data  = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'test_set_arun_2D.pkl')
+    elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':
+        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
+        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
+        test_data  = create_dataset_real_2D(params, dataset_name = 'test_set_real_onlyfirsttwoseqs_2D.pkl')
+    elif params['dataset']=='arun_2D_realtestdata':
+        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
+        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
+        test_data  = create_dataset_real_2D(params, dataset_name = 'test_set_real_2D.pkl')        
     return train_data, val_data, test_data
 
 
@@ -335,16 +407,16 @@ def parse_args(args):
                         help='Path to an existing checkpoint. Used along with "--resume"')    
     parser.add_argument('--prng-seed', type=int, default=1337, metavar='S',
                         help='Seed for all the pseudo-random number generators')
-    parser.add_argument('--architecture', choices=['unetsar'], default='unetsar', type=str,
-                        help='unetsar|...')
+    parser.add_argument('--architecture', choices=['unetsar', 'unetsar_arun', 'unet2d_fastfirst_3', 'unet2d_slowfirst_3'], default='unetsar_arun', type=str,
+                        help='unetsar|unetsar_arun|unet2d_fastfirst_3|unet2d_slowfirst_3|...')
     parser.add_argument('--no-parallel', action='store_true', default=False,
                         help='Flag to prevent paralellization of the model across the GPUs')
     parser.add_argument('--in-chans', default=1, type=int, metavar='IC',
                         help='Number of input channels') # TODO - adapt this to set edge_sample_length and sample_gap
     # parser.add_argument('--normalization', choices=['none','batchnorm','instancenorm'], default='batchnorm', type=str,
     #                     help='none|batchnorm|instancenorm') # TODO - adapt this according to Oscar's code...
-    parser.add_argument('--criterion-g', choices=['l1loss', 'smoothl1loss', 'mseloss'], required=True,
-                        help='l1loss|smoothl1loss|mseloss')
+    parser.add_argument('--criterion-g', choices=['l1loss', 'smoothl1loss', 'mseloss', 'l1andfftloss'], required=True,
+                        help='l1loss|smoothl1loss|mseloss|l1andfftloss')
     # IMPORTANT: usage --epochs=80 or --epochs 80 (both work)
     parser.add_argument('--epochs', default=200, type=int, metavar='N',
                         help='Number of epochs to train (default: 200)')
@@ -449,6 +521,12 @@ def build_model(parsed_args, device):
     # Initialize the neural network model
     if parsed_args.architecture == 'unetsar':        
         g_net = UNetSAR()
+    elif parsed_args.architecture == 'unetsar_arun':
+        g_net = UNetSAR_Arun()
+    elif parsed_args.architecture == 'unet2d_fastfirst_3':
+        g_net = UNet2DSAR_fastfirst_3()
+    elif parsed_args.architecture == 'unet2d_slowfirst_3':
+        g_net = UNet2DSAR_slowfirst_3()
     else:
         print('Unacceptable input arguments when building the network')
         sys.exit(0)
@@ -496,7 +574,7 @@ def build_optim(parsed_args, g_net):
 def initialize_loss_criterion(params):
     # Options for possible loss functions
     # loss_dict = {'dscloss':DiceCoeffLoss(), 'maeloss': torch.nn.L1Loss(), 'mseloss': torch.nn.MSELoss(), 'rmseloss': RMSELoss(), 'bceloss': torch.nn.BCELoss()}
-    loss_dict = {'l1loss': torch.nn.L1Loss(), 'smoothl1loss': torch.nn.SmoothL1Loss(), 'mseloss': torch.nn.MSELoss()}
+    loss_dict = {'l1loss': torch.nn.L1Loss(), 'smoothl1loss': torch.nn.SmoothL1Loss(), 'mseloss': torch.nn.MSELoss(), 'l1andfftloss': L1andFFTLoss}
     # NOTE: BCEWithLogitsLoss combines a Sigmoid layer and the BCELoss in one single class. This version is more numerically stable than using a plain Sigmoid followed by a BCELoss as, by combining the operations into one layer, we take advantage of the log-sum-exp trick for numerical stability.
     # So use it in general when possible...
     
@@ -504,7 +582,7 @@ def initialize_loss_criterion(params):
     criterion_g = loss_dict[params['criterion_g']]
 
     # Moving it to the GPU - not really required except for stateful losses as stated in https://discuss.pytorch.org/t/move-the-loss-function-to-gpu/20060
-    criterion_g.to(params['device'])
+    # criterion_g.to(params['device'])
 
     return criterion_g
 
