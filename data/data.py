@@ -287,13 +287,9 @@ def create_dataset_akshay(params, dataset_size=50000, dataset_name='train_set_ak
     
     return gen_dataset
 
-def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun.pkl', invert_waveforms=False, line_length = 1000):
-    if '_set_arun.pkl' in dataset_name:
-        num_files = 500
-        dataset_dir = '20200903_data'
-    elif '_set_arun_2.pkl' in dataset_name or '_set_arun_3.pkl' in dataset_name:
-        num_files = 5000
-        dataset_dir = '20200923_data'
+def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun.pkl', invert_waveforms=False, line_length = 1024):
+    num_files = 5000
+    dataset_dir = '20200923_data'
 
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
         ROOT_DIR = os.getcwd()
@@ -301,7 +297,7 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
 
         save_dict = {}
 
-        save_dict['max_sparse'] = 10 # TODO: Set in the simulation
+        save_dict['max_sparse'] = 10 # NOTE: Set in the simulation
         missing_rate = 0.50
         save_dict['missing_rate'] = missing_rate
         save_dict['sparsity_pattern'] = 'uniform' # ish
@@ -321,7 +317,7 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
                 random.seed(idx+13371337*2)                
             file_idx = random.randint(1,num_files) # Inclusive of both end points
             file_name = f'{file_idx}.mat'
-            data = sio.loadmat(os.path.join('/data/arun/projects/sarnet/data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
+            data = sio.loadmat(os.path.join(save_dir, 'mat_data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
 
             # Choose a certain column of it
             col_idx = random.randint(0,data.shape[1]-1)
@@ -393,7 +389,7 @@ def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_a
                 random.seed(idx+13371337*2)                
             file_idx = random.randint(1,num_files) # Inclusive of both end points
             file_name = f'{file_idx}.mat'
-            data = sio.loadmat(os.path.join('/data/arun/projects/sarnet/data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
+            data = sio.loadmat(os.path.join(save_dir, 'mat_data', dataset_dir, file_name))['data'][300:300+line_length,:].astype(np.float32) # 300:1300 is relevant based on the simulation parameters I set for 1000 length signal
 
             # Choose column spacing
             decision_var = random.random()
@@ -443,42 +439,17 @@ def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_a
 
     return gen_dataset
 
-def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 1000):
+def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 1024):
 
     # pdb.set_trace()
-    if '_set_real.pkl' in dataset_name or '_set_real_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C3.mat', '/data/arun/projects/sarnet/real_sar_data/C4.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C5.mat', '/data/arun/projects/sarnet/real_sar_data/G1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/G2.mat', '/data/arun/projects/sarnet/real_sar_data/T1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T2.mat', '/data/arun/projects/sarnet/real_sar_data/T3.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T4.mat', '/data/arun/projects/sarnet/real_sar_data/T5.mat']
-    elif '_set_real_onlyfirsttwoseqs.pkl' in dataset_name or '_set_real_onlyfirsttwoseqs_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat']        
-    elif '_set_real_C1.pkl' in dataset_name or '_set_real_C1_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat']
-    elif '_set_real_C2.pkl' in dataset_name or '_set_real_C2_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C2.mat']
-    elif '_set_real_C3.pkl' in dataset_name or '_set_real_C3_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C3.mat']
-    elif '_set_real_C4.pkl' in dataset_name or '_set_real_C4_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C4.mat']
-    elif '_set_real_C5.pkl' in dataset_name or '_set_real_C5_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C5.mat']
-    elif '_set_real_T1.pkl' in dataset_name or '_set_real_T1_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T1.mat']
-    elif '_set_real_T2.pkl' in dataset_name or '_set_real_T2_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T2.mat']
-    elif '_set_real_T3.pkl' in dataset_name or '_set_real_T3_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T3.mat']
-    elif '_set_real_T4.pkl' in dataset_name or '_set_real_T4_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T4.mat']
-    elif '_set_real_T5.pkl' in dataset_name or '_set_real_T5_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T5.mat']
-    elif '_set_real_G1.pkl' in dataset_name or '_set_real_G1_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G1.mat']
-    elif '_set_real_G2.pkl' in dataset_name or '_set_real_G2_1024.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G2.mat']
+    data_dir = os.path.join('data', 'mat_data', 'real_sar_data')
+    file_list = ['C1.mat', 'C2.mat', 'C3.mat', 'C4.mat', 'C5.mat', 'T1.mat', 'T2.mat', 'T3.mat', 'T4.mat', 'T5.mat'] # Removed G1.mat and G2.mat
+    if '_set_real.pkl' in dataset_name: 
+        real_file_names = [os.path.join(data_dir, k) for k in file_list]
+    elif '_set_real_onlyfirsttwoseqs.pkl' in dataset_name:
+        real_file_names = [os.path.join(data_dir, k) for k in file_list[0:2]] # only first two elements
+    else:        
+        real_file_names = [os.path.join(data_dir, dataset_name.split('_')[-1][:-4]+'.mat')]
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
         ROOT_DIR = os.getcwd()
         save_dir = os.path.join(ROOT_DIR, 'data')
@@ -538,39 +509,14 @@ def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 
 
 def create_dataset_real_2D(params, dataset_name='test_set_real_2D.pkl'):
 
-    if '_set_real_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C3.mat', '/data/arun/projects/sarnet/real_sar_data/C4.mat',
-        '/data/arun/projects/sarnet/real_sar_data/C5.mat', '/data/arun/projects/sarnet/real_sar_data/G1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/G2.mat', '/data/arun/projects/sarnet/real_sar_data/T1.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T2.mat', '/data/arun/projects/sarnet/real_sar_data/T3.mat',
-        '/data/arun/projects/sarnet/real_sar_data/T4.mat', '/data/arun/projects/sarnet/real_sar_data/T5.mat']
+    data_dir = os.path.join('data', 'mat_data', 'real_sar_data')
+    file_list = ['C1.mat', 'C2.mat', 'C3.mat', 'C4.mat', 'C5.mat', 'T1.mat', 'T2.mat', 'T3.mat', 'T4.mat', 'T5.mat'] # Removed G1.mat and G2.mat
+    if '_set_real_2D.pkl' in dataset_name: 
+        real_file_names = [os.path.join(data_dir, k) for k in file_list]
     elif '_set_real_onlyfirsttwoseqs_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat', '/data/arun/projects/sarnet/real_sar_data/C2.mat']        
-    elif '_set_real_C1_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C1.mat']
-    elif '_set_real_C2_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C2.mat']
-    elif '_set_real_C3_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C3.mat']
-    elif '_set_real_C4_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C4.mat']
-    elif '_set_real_C5_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/C5.mat']
-    elif '_set_real_T1_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T1.mat']
-    elif '_set_real_T2_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T2.mat']
-    elif '_set_real_T3_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T3.mat']
-    elif '_set_real_T4_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T4.mat']
-    elif '_set_real_T5_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/T5.mat']
-    elif '_set_real_G1_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G1.mat']
-    elif '_set_real_G2_2D.pkl' in dataset_name:
-        real_file_names = ['/data/arun/projects/sarnet/real_sar_data/G2.mat']
+        real_file_names = [os.path.join(data_dir, k) for k in file_list[0:2]] # only first two elements
+    else:        
+        real_file_names = [os.path.join(data_dir, dataset_name.split('_')[-2]+'.mat')]
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist
         ROOT_DIR = os.getcwd()
         save_dir = os.path.join(ROOT_DIR, 'data')

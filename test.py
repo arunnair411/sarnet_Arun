@@ -315,24 +315,12 @@ def create_datasets(params):
         chosen_dataset = create_dataset_akshay(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_akshay.pkl")
     elif params['dataset']=='arun':
         chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun.pkl")
-    elif params['dataset']=='arun_inverted':
-        chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_inverted.pkl", invert_waveforms=True)
-    elif params['dataset']=='arun_2':
-        chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_2.pkl")
-    elif params['dataset']=='arun_3':
-        chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun_3.pkl", line_length=1024)        
-    elif params['dataset']=='real':
+    elif params['dataset']=='arun_realtestdata':
         chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl")
-    elif params['dataset']=='real_1024':
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl", line_length=1024)
-    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs':
+    elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
         chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl")
-    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs_1024':
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl", line_length=1024)
     elif params['dataset'] in ['real_C1', 'real_C2', 'real_C3', 'real_C4', 'real_C5', 'real_T1', 'real_T2', 'real_T3', 'real_T4', 'real_T5', 'real_G1', 'real_G2']:
         chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
-    elif params['dataset'] in ['real_C1_1024', 'real_C2_1024', 'real_C3_1024', 'real_C4_1024', 'real_C5_1024', 'real_T1_1024', 'real_T2_1024', 'real_T3_1024', 'real_T4_1024', 'real_T5_1024', 'real_G1_1024', 'real_G2_1024']:
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl", line_length=1024)
     elif params['dataset']=='arun_2D':
         chosen_dataset   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = f"{params['data_split']}_set_arun_2D.pkl")
     elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':

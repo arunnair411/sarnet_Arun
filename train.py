@@ -313,31 +313,15 @@ def create_datasets(params):
     elif params['dataset']=='arun':
         train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun.pkl')        
-    elif params['dataset']=='arun_2':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
-        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun_2.pkl')
-    elif params['dataset']=='arun_2_realtestdata_onlyfirsttwoseqs':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
+        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun.pkl')
+    elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
         test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
-    elif params['dataset']=='arun_2_realtestdata':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_2.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_2.pkl')
+    elif params['dataset']=='arun_realtestdata':
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
         test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
-    elif params['dataset']=='arun_3':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
-        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun_3.pkl', line_length = 1024)
-    elif params['dataset']=='arun_3_realtestdata_onlyfirsttwoseqs':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl', line_length=1024)
-    elif params['dataset']=='arun_3_realtestdata':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun_3.pkl', line_length = 1024)
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun_3.pkl', line_length = 1024)
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl', line_length=1024)
     elif params['dataset']=='arun_2D':
         train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
         val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
