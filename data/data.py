@@ -357,6 +357,37 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
 
     return gen_dataset
 
+def create_dataset_arun_testdistributed(params,  dataset_name='train_set_arun_testdistributed.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+
+    signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Training Dataset')
+
+    return gen_dataset
+
+def create_dataset_arun_testdistributedandregular(params,  dataset_name='train_set_arun.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_1, measurements_1 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    with open(os.path.join('data', dataset_name.split('.')[0]+'_testdistributed.pkl'), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+    signals = torch.cat((signals_1, signals_2),0)
+    measurements = torch.cat((measurements_1, measurements_2),0)
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Training Dataset')
+
+    return gen_dataset
+
 def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_arun_2D.pkl', invert_waveforms=False):
     num_files = 5000
     dataset_dir = '20200923_data'

@@ -64,7 +64,16 @@
 # CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_realtestdata_onlyfirsttwoseqs_fftloss_1,05    --save-test-val-results                                                                                                             --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 # TO RESUME
 # CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs   --store-dir=20201023_arun_realtestdata_onlyfirsttwoseqs_fftloss_1,05    --save-test-val-results --resume --checkpoint=checkpoints/20201023_arun_realtestdata_onlyfirsttwoseqs_fftloss_1,05/best_model.pt    --architecture=unetsar_arun --criterion-g=l1andfftloss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
-
+## On 10.160.199.26
+# Expt 1 - No scheduling with 1e-4 learning rate more epochs and testing on real data and training on real distributed training data
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_testdistributed             --store-dir=20201023_arun_testdistributed              --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - No scheduling with 1e-4 learning rate more epochs and testing on real data and training on real distributed training data+simulated training data
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_testdistributedandregular   --store-dir=20201023_arun_testdistributedandregular    --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## Running Akshay's network instead...
+# Expt 1 - No scheduling with 1e-4 learning rate more epochs and testing on real data (1st two sequences) - previous best val score on 1st two sequences - best val of 36.88 @ step <200 (sim) and best test of 12.13 @ step 115 - 200 epochs suffice 
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results                                                                                                  --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# TO RESUME
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt    --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 
 import time
 import numpy as np
@@ -99,7 +108,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D
+from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -321,6 +330,14 @@ def create_datasets(params):
     elif params['dataset']=='arun_realtestdata':
         train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
+    elif params['dataset']=='arun_testdistributed':
+        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_set_arun_testdistributed.pkl')
+        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun_testdistributed.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')        
+    elif params['dataset']=='arun_testdistributedandregular':
+        train_data = create_dataset_arun_testdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
+        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun.pkl')
         test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
     elif params['dataset']=='arun_2D':
         train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
