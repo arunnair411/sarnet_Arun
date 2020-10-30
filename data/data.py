@@ -388,6 +388,25 @@ def create_dataset_arun_testdistributedandregular(params,  dataset_name='train_s
 
     return gen_dataset
 
+def create_dataset_arun_CTtestdistributedandregular(params,  dataset_name='train_set_arun.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_1, measurements_1 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    with open(os.path.join('data', f"{dataset_name.split('_')[0] }_CTsplit_set_arun_testdistributed.pkl"), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+    signals = torch.cat((signals_1, signals_2),0)
+    measurements = torch.cat((measurements_1, measurements_2),0)
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Training Dataset')
+
+    return gen_dataset
+
+
 def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_arun_2D.pkl', invert_waveforms=False):
     num_files = 5000
     dataset_dir = '20200923_data'
@@ -483,6 +502,8 @@ def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 
         real_file_names = [os.path.join(data_dir, k) for k in file_list[0:5]]
     elif '_set_real_onlyTsplit.pkl' in dataset_name:
         real_file_names = [os.path.join(data_dir, k) for k in file_list[5:]] # only first two elements                
+    elif '_set_real_CTsplit.pkl' in dataset_name:
+        real_file_names = [os.path.join(data_dir, k) for k in file_list[3:5]+file_list[7:]] # only first two elements                        
     else:        
         real_file_names = [os.path.join(data_dir, dataset_name.split('_')[-1][:-4]+'.mat')]
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist

@@ -11,7 +11,7 @@ from data import SARDataGenerator, generate_freq_measurements
 from utils import snr_akshay
 from tqdm import tqdm
 
-mode = 'val_Tsplit'
+mode = 'val_CTsplit'
 if mode == 'train':
     n_data = 50000
     inner_loop_total = 5000
@@ -36,6 +36,14 @@ elif mode == 'val_Tsplit':
     n_data = 6250
     inner_loop_total = 1250
     seed = 500    
+elif mode == 'train_CTsplit':
+    n_data = 50000
+    inner_loop_total = 10000
+    seed = 600
+elif mode == 'val_CTsplit':
+    n_data = 6250
+    inner_loop_total = 1250
+    seed = 700    
 
 # dim = 1000
 dim = 1024
@@ -84,7 +92,9 @@ pdb.set_trace()
 if mode in ['train_Csplit', 'val_Csplit']:
     dataset_names = dataset_names[0:5]
 elif mode in ['train_Tsplit', 'val_Tsplit']:
-    dataset_names = dataset_names[5:]    
+    dataset_names = dataset_names[5:]
+elif mode in ['train_CTsplit', 'val_CTsplit']:
+    dataset_names = dataset_names[0:3] + dataset_names[5:7]
 
 random.seed(seed)
 np.random.seed(seed)

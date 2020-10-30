@@ -77,10 +77,14 @@
 ## 2020-10-29
 # Expt 1 - lr=1e-4, training on my data using Akshay's network architecture to see how it does... NOTE: While --dataset=arun_realtestdata_onlyfirsttwoseqs, I made a one time modification to it to generate 1000x1 data for Akshay's n/w
 # CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs --store-dir=20201029_akshay_train_set_arun --save-test-val-results  --architecture=unetsar --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
-# Expt 2 - lr=1e-4, training on C-data sparse codes but testing on T-data sparse codes
+# Expt 2 - STOPPED (didn't do well) - lr=1e-4, training on C-data sparse codes but testing on T-data sparse codes
 # CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_Csplittrain_Tsplittest --store-dir=20201029_arun_testdistributed_Csplittrain_Tsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 # Expt 3 - lr=1e-4, training on T-data sparse codes but testing on C-data sparse codes
 # CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_testdistributed_Tsplittrain_Csplittest --store-dir=20201029_arun_testdistributed_Tsplittrain_Csplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 4 - lr=1e-4, training on C1,C2,C3,T1,T2 and testing on C4,C5,T3,T4,T5
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest --store-dir=20201029_arun_testdistributed_CTsplittrain_CTsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 replacement - lr=1e-4, training on training on C1,C2,C3,T1,T2 + simulations and testing on C4,C5,T3,T4,T5
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest_andregular --store-dir=20201029_arun_testdistributed_CTsplittrain_CTsplittest_andregular --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 
 import time
 import numpy as np
@@ -115,7 +119,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular
+from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular, create_dataset_arun_CTtestdistributedandregular
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -352,11 +356,19 @@ def create_datasets(params):
     elif params['dataset']=='arun_testdistributed_Tsplittrain_Csplittest':
         train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_Tsplit_set_arun_testdistributed.pkl')
         val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_Tsplit_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyCsplit.pkl')        
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyCsplit.pkl')
+    elif params['dataset']=='arun_testdistributed_CTsplittrain_CTsplittest':
+        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_CTsplit_set_arun_testdistributed.pkl')
+        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_CTsplit_set_arun_testdistributed.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_CTsplit.pkl')
     elif params['dataset']=='arun_testdistributedandregular':
         train_data = create_dataset_arun_testdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
         val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun.pkl')
         test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
+    elif params['dataset']=='arun_testdistributed_CTsplittrain_CTsplittest_andregular':
+        train_data = create_dataset_arun_CTtestdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
+        val_data   = create_dataset_arun_CTtestdistributedandregular(params, dataset_name = 'val_set_arun.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')        
     elif params['dataset']=='arun_2D':
         train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
         val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
