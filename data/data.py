@@ -425,10 +425,10 @@ def create_dataset_arun_2D(params, dataset_size=50000, dataset_name='train_set_a
             # Choose column spacing
             decision_var = random.random()
             # Choose a certain subset of columns
-            if line_length<=0.5: # with probability 0.5 - spacing of 1 element between lines
+            if decision_var<=0.5: # with probability 0.5 - spacing of 1 element between lines
                 col_idx = random.randint(0,data.shape[1]-3)
                 signals[idx,0] = data[:,col_idx:col_idx+3].T
-            elif line_length<=0.8: # with probability 0.3 - spacing of 2 elements between lines
+            elif decision_var<=0.8: # with probability 0.3 - spacing of 2 elements between lines
                 col_idx = random.randint(0,data.shape[1]-5)
                 signals[idx,0] = data[:,[col_idx,col_idx+2,col_idx+4]].T
             else: # with probability 0.2 - spacing of 4 elements between lines
@@ -479,6 +479,10 @@ def create_dataset_real(params, dataset_name='test_set_real.pkl', line_length = 
         real_file_names = [os.path.join(data_dir, k) for k in file_list]
     elif '_set_real_onlyfirsttwoseqs.pkl' in dataset_name:
         real_file_names = [os.path.join(data_dir, k) for k in file_list[0:2]] # only first two elements
+    elif '_set_real_onlyCsplit.pkl' in dataset_name:
+        real_file_names = [os.path.join(data_dir, k) for k in file_list[0:5]]
+    elif '_set_real_onlyTsplit.pkl' in dataset_name:
+        real_file_names = [os.path.join(data_dir, k) for k in file_list[5:]] # only first two elements                
     else:        
         real_file_names = [os.path.join(data_dir, dataset_name.split('_')[-1][:-4]+'.mat')]
     if not os.path.isfile(os.path.join('data', dataset_name)): # The filename doesn't already exist

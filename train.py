@@ -74,6 +74,13 @@
 # CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results                                                                                                  --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 # TO RESUME
 # CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_3_realtestdata_onlyfirsttwoseqs   --store-dir=20201008_arun_3_realtestdata_onlyfirsttwoseqs    --save-test-val-results --resume --checkpoint=checkpoints/20201008_arun_3_realtestdata_onlyfirsttwoseqs/best_model.pt    --architecture=unetsar_arun --criterion-g=l1loss --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 2020-10-29
+# Expt 1 - lr=1e-4, training on my data using Akshay's network architecture to see how it does... NOTE: While --dataset=arun_realtestdata_onlyfirsttwoseqs, I made a one time modification to it to generate 1000x1 data for Akshay's n/w
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs --store-dir=20201029_akshay_train_set_arun --save-test-val-results  --architecture=unetsar --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - lr=1e-4, training on C-data sparse codes but testing on T-data sparse codes
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_Csplittrain_Tsplittest --store-dir=20201029_arun_testdistributed_Csplittrain_Tsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 3 - lr=1e-4, training on T-data sparse codes but testing on C-data sparse codes
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_testdistributed_Tsplittrain_Csplittest --store-dir=20201029_arun_testdistributed_Tsplittrain_Csplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 
 import time
 import numpy as np
@@ -324,9 +331,12 @@ def create_datasets(params):
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
         test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun.pkl')
     elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
+        # train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
+        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'akshay_train_set_arun.pkl', line_length=1000)
+        # val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
+        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'akshay_val_set_arun.pkl', line_length=1000)
+        # test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'akshay_test_set_real_onlyfirsttwoseqs.pkl', line_length=1000)
     elif params['dataset']=='arun_realtestdata':
         train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
         val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
@@ -334,7 +344,15 @@ def create_datasets(params):
     elif params['dataset']=='arun_testdistributed':
         train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_set_arun_testdistributed.pkl')
         val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')        
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
+    elif params['dataset']=='arun_testdistributed_Csplittrain_Tsplittest':
+        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_Csplit_set_arun_testdistributed.pkl')
+        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_Csplit_set_arun_testdistributed.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyTsplit.pkl')
+    elif params['dataset']=='arun_testdistributed_Tsplittrain_Csplittest':
+        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_Tsplit_set_arun_testdistributed.pkl')
+        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_Tsplit_set_arun_testdistributed.pkl')
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyCsplit.pkl')        
     elif params['dataset']=='arun_testdistributedandregular':
         train_data = create_dataset_arun_testdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
         val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun.pkl')
@@ -512,8 +530,8 @@ def seed_prng(parsed_args, device):
         torch.cuda.manual_seed(parsed_args.prng_seed)
         torch.cuda.manual_seed_all(parsed_args.prng_seed) 
         torch.backends.cudnn.enabled = True # This was originally false. Changing it to true still seems to work.
-        # torch.backends.cudnn.benchmark = False
-        torch.backends.cudnn.benchmark = True # Changing this to true from false 1) Speeds up the code a bit - 160s instead of 180s 2) Mostly preserves deterministic behavior (ran it thrice, runs 2 and 3 were identical, 1 was slightly different)
+        torch.backends.cudnn.benchmark = False # Sometimes need to change this to false or else you get a CUDNN_STATUS_INTERNAL_ERROR
+        # torch.backends.cudnn.benchmark = True # Changing this to true from false 1) Speeds up the code a bit - 160s instead of 180s 2) Mostly preserves deterministic behavior (ran it thrice, runs 2 and 3 were identical, 1 was slightly different)
         torch.backends.cudnn.deterministic = True # Changing this to false for my use case didn't make a difference in speed
 
 # -------------------------------------------------------------------------------------------------

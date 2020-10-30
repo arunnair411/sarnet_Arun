@@ -11,13 +11,32 @@ from data import SARDataGenerator, generate_freq_measurements
 from utils import snr_akshay
 from tqdm import tqdm
 
-mode = 'val'
+mode = 'val_Tsplit'
 if mode == 'train':
     n_data = 50000
     inner_loop_total = 5000
+    seed = 0
 elif mode == 'val':
     n_data = 6250
     inner_loop_total = 625
+    seed = 100
+elif mode == 'train_Csplit':
+    n_data = 50000
+    inner_loop_total = 10000
+    seed = 200
+elif mode == 'val_Csplit':
+    n_data = 6250
+    inner_loop_total = 1250
+    seed = 300
+elif mode == 'train_Tsplit':
+    n_data = 50000
+    inner_loop_total = 10000
+    seed = 400
+elif mode == 'val_Tsplit':
+    n_data = 6250
+    inner_loop_total = 1250
+    seed = 500    
+
 # dim = 1000
 dim = 1024
 max_sparse=50 # Don't think this really matters... only want the dictionary
@@ -61,8 +80,14 @@ dataset_names = ['test_set_real_C1.pkl', 'test_set_real_C2.pkl', 'test_set_real_
                 'test_set_real_T1.pkl', 'test_set_real_T2.pkl', 'test_set_real_T3.pkl', 'test_set_real_T4.pkl', 'test_set_real_T5.pkl']
                 # 'test_set_real_G1.pkl', 'test_set_real_G2.pkl'] # Removing G_1 and G_2.pkl
 # dataset_names = ['test_set_real_C1.pkl']
-random.seed(1337)
-np.random.seed(1337)
+pdb.set_trace()
+if mode in ['train_Csplit', 'val_Csplit']:
+    dataset_names = dataset_names[0:5]
+elif mode in ['train_Tsplit', 'val_Tsplit']:
+    dataset_names = dataset_names[5:]    
+
+random.seed(seed)
+np.random.seed(seed)
 count = 0
 signals = np.zeros((n_data, 1, dim))
 for dataset_name in dataset_names:
@@ -92,5 +117,6 @@ measurements = generate_freq_measurements(signals, missing_rate)
 save_dict = {}
 save_dict['signals'], save_dict['measurements'] = signals, measurements
 save_dict['missing_rate'] = missing_rate
+pdb.set_trace()
 with open(os.path.join('data', f'{mode}_set_arun_testdistributed.pkl'), 'wb') as f:
     pickle.dump(save_dict,f)
