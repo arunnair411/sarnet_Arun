@@ -93,6 +93,12 @@
 # CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G1_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_G1  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
 # CUDA_VISIBLE_DEVICES=1 python test.py --gpu-ids 0 --dataset=real_G2_2D         --data-split=test --store-dir=20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst_G2  --save-test-val-results --checkpoint=checkpoints/20201008_arun_2D_realtestdata_onlyfirsttwoseqs_slowtimefirst/best_model.pt   --architecture=unet2d_fastfirst_3 --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
 
+# 2020-11-02
+# CUDA_VISIBLE_DEVICES=3 python test.py --gpu-ids 0 --dataset=arun_interference_testonfirsttwoseqs_-15         --data-split=test --store-dir=20201008_arun_interference_testonfirsttwoseqs_-15  --save-test-val-results --checkpoint=checkpoints/20201102_arun_interference_testonfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=3 python test.py --gpu-ids 0 --dataset=arun_interference_testonfirsttwoseqs_0           --data-split=test --store-dir=20201008_arun_interference_testonfirsttwoseqs_0    --save-test-val-results --checkpoint=checkpoints/20201102_arun_interference_testonfirsttwoseqs/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=3 python test.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_50         --data-split=test --store-dir=20201008_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_50  --save-test-val-results --checkpoint=checkpoints/20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+# CUDA_VISIBLE_DEVICES=3 python test.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps_50         --data-split=test --store-dir=20201008_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps_50  --save-test-val-results --checkpoint=checkpoints/20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
 import pdb
 import os, sys, glob
 import argparse, pathlib
@@ -119,7 +125,8 @@ from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D
+# from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D
+from utils.dataset_deets import dataset_deets
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -262,73 +269,79 @@ def visualize(params, epoch, g_net, data_loader, writer):
 # -------------------------------------------------------------------------------------------------
 ## Create dataset objects to load the data
 def create_datasets(params):
-    #--------------------------------------------------------------------------
-    # # COMMENTING THIS SECTION OUT
-    # print('-'*80)
-    # print('Retrieve dataset details...')
-    # print('-'*80)
-    # dataset_deets = retrieve_dataset_filenames(dataset=params['dataset'])
+    # #--------------------------------------------------------------------------
+    # # # COMMENTING THIS SECTION OUT
+    # # print('-'*80)
+    # # print('Retrieve dataset details...')
+    # # print('-'*80)
+    # # dataset_deets = retrieve_dataset_filenames(dataset=params['dataset'])
     
-    # print('-'*30)
-    # print('Reading in data filenames...')
-    # print('-'*30)
-    # split_clean_ = []
-    # split_noisy_ = []
-    # for clean_data_path, noisy_data_path in zip(dataset_deets['clean_'+params['data_split']+'_data_path_list'], dataset_deets['noisy_'+params['data_split']+'_data_path_list']):
-    #     curr_data_filenames_clean = sorted(glob.glob(os.path.join(clean_data_path,'*.wav')))
-    #     curr_data_filenames_noisy = glob.glob(os.path.join(noisy_data_path,'*.wav'))
-    #     curr_data_filenames_noisy.sort(key = lambda x: x.split('fileid')[1])
-    #     split_clean_.extend(curr_data_filenames_clean)
-    #     split_noisy_.extend(curr_data_filenames_noisy)
+    # # print('-'*30)
+    # # print('Reading in data filenames...')
+    # # print('-'*30)
+    # # split_clean_ = []
+    # # split_noisy_ = []
+    # # for clean_data_path, noisy_data_path in zip(dataset_deets['clean_'+params['data_split']+'_data_path_list'], dataset_deets['noisy_'+params['data_split']+'_data_path_list']):
+    # #     curr_data_filenames_clean = sorted(glob.glob(os.path.join(clean_data_path,'*.wav')))
+    # #     curr_data_filenames_noisy = glob.glob(os.path.join(noisy_data_path,'*.wav'))
+    # #     curr_data_filenames_noisy.sort(key = lambda x: x.split('fileid')[1])
+    # #     split_clean_.extend(curr_data_filenames_clean)
+    # #     split_noisy_.extend(curr_data_filenames_noisy)
     
-    # # If there is no loaded data to denoise
-    # if not split_noisy_:
-    #     print(f"No data corresponding to chosen data-split of {params['data_split']}_noisy. Exiting.")
-    #     sys.exit(0)
+    # # # If there is no loaded data to denoise
+    # # if not split_noisy_:
+    # #     print(f"No data corresponding to chosen data-split of {params['data_split']}_noisy. Exiting.")
+    # #     sys.exit(0)
 
-    # apply_on_clean = True if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanvoip', 'DNS-challenge-synthetic-test-expanded-cleanteledonline']  else False
-    # center_gap = True if params['architecture'] == 'unetseparable_uros_small_5' else False
-    # _transforms_list =[]
-    # # First, decide if you want to include gap filling
-    # if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanvoip', 'DNS-challenge-synthetic-test-expanded-noisyvoip']:
-    #     _transforms_list.append(ApplyPacketLoss(apply_on_clean=apply_on_clean, pass_mask=params['pass_mask'], average_init=params['average_init']))
-    # # Second, decide if you want to include telecom distortions generated online
-    # if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanteledonline', 'DNS-challenge-synthetic-test-expanded-noisyteledonline']:
-    #     _transforms_list.append(ApplyTelecomDistortions(apply_on_clean=apply_on_clean))
-    # if params['architecture'] in params['time_frequency_domain_architectures']:
-    #     _transforms_list.append(ApplySTFT(is_training=False))
-    #     if params['pass_mask']:
-    #         _transforms_list.append(TFGapFillingMaskEstimation())
-    #         _transforms_list.append(ConcatMaskToInput(domain='TF'))
-    # elif params['architecture'] in params['time_domain_architectures']:
-    #     if params['pass_mask']:
-    #         _transforms_list.append(ConcatMaskToInput(domain='T'))
-    # _transforms_list.append(ToTensor())
+    # # apply_on_clean = True if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanvoip', 'DNS-challenge-synthetic-test-expanded-cleanteledonline']  else False
+    # # center_gap = True if params['architecture'] == 'unetseparable_uros_small_5' else False
+    # # _transforms_list =[]
+    # # # First, decide if you want to include gap filling
+    # # if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanvoip', 'DNS-challenge-synthetic-test-expanded-noisyvoip']:
+    # #     _transforms_list.append(ApplyPacketLoss(apply_on_clean=apply_on_clean, pass_mask=params['pass_mask'], average_init=params['average_init']))
+    # # # Second, decide if you want to include telecom distortions generated online
+    # # if params['dataset'] in ['DNS-challenge-synthetic-test-expanded-cleanteledonline', 'DNS-challenge-synthetic-test-expanded-noisyteledonline']:
+    # #     _transforms_list.append(ApplyTelecomDistortions(apply_on_clean=apply_on_clean))
+    # # if params['architecture'] in params['time_frequency_domain_architectures']:
+    # #     _transforms_list.append(ApplySTFT(is_training=False))
+    # #     if params['pass_mask']:
+    # #         _transforms_list.append(TFGapFillingMaskEstimation())
+    # #         _transforms_list.append(ConcatMaskToInput(domain='TF'))
+    # # elif params['architecture'] in params['time_domain_architectures']:
+    # #     if params['pass_mask']:
+    # #         _transforms_list.append(ConcatMaskToInput(domain='T'))
+    # # _transforms_list.append(ToTensor())
 
-    # chosen_dataset   = MyDataset(clean_paths=split_clean_, noisy_paths=split_noisy_, is_training=False,
-    #                         transform=transforms.Compose(_transforms_list))
+    # # chosen_dataset   = MyDataset(clean_paths=split_clean_, noisy_paths=split_noisy_, is_training=False,
+    # #                         transform=transforms.Compose(_transforms_list))
 
-    # req_filenames_dict = {f"{params['data_split']}_clean": split_clean_, f"{params['data_split']}_noisy": split_noisy_}
-    # return chosen_dataset, dataset_deets, req_filenames_dict
-    #--------------------------------------------------------------------------
-    if params['dataset']=='akshay':
-        chosen_dataset = create_dataset_akshay(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_akshay.pkl")
-    elif params['dataset']=='arun':
-        chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun.pkl")
-    elif params['dataset']=='arun_realtestdata':
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl")
-    elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl")
-    elif params['dataset'] in ['real_C1', 'real_C2', 'real_C3', 'real_C4', 'real_C5', 'real_T1', 'real_T2', 'real_T3', 'real_T4', 'real_T5', 'real_G1', 'real_G2']:
-        chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
-    elif params['dataset']=='arun_2D':
-        chosen_dataset   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = f"{params['data_split']}_set_arun_2D.pkl")
-    elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':
-        chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs_2D.pkl")
-    elif params['dataset']=='arun_2D_realtestdata':
-        chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_2D.pkl")
-    elif params['dataset'] in ['real_C1_2D', 'real_C2_2D', 'real_C3_2D', 'real_C4_2D', 'real_C5_2D', 'real_T1_2D', 'real_T2_2D', 'real_T3_2D', 'real_T4_2D', 'real_T5_2D', 'real_G1_2D', 'real_G2_2D']:
-        chosen_dataset = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
+    # # req_filenames_dict = {f"{params['data_split']}_clean": split_clean_, f"{params['data_split']}_noisy": split_noisy_}
+    # # return chosen_dataset, dataset_deets, req_filenames_dict
+    # #--------------------------------------------------------------------------
+    # if params['dataset']=='akshay':
+    #     chosen_dataset = create_dataset_akshay(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_akshay.pkl")
+    # elif params['dataset']=='arun':
+    #     chosen_dataset = create_dataset_arun(params, dataset_size=6250, dataset_name = f"{params['data_split']}_set_arun.pkl")
+    # elif params['dataset']=='arun_realtestdata':
+    #     chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real.pkl")
+    # elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
+    #     chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs.pkl")
+    # elif params['dataset'] in ['real_C1', 'real_C2', 'real_C3', 'real_C4', 'real_C5', 'real_T1', 'real_T2', 'real_T3', 'real_T4', 'real_T5', 'real_G1', 'real_G2']:
+    #     chosen_dataset = create_dataset_real(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
+    # elif params['dataset']=='arun_2D':
+    #     chosen_dataset   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = f"{params['data_split']}_set_arun_2D.pkl")
+    # elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':
+    #     chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_onlyfirsttwoseqs_2D.pkl")
+    # elif params['dataset']=='arun_2D_realtestdata':
+    #     chosen_dataset   = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_real_2D.pkl")
+    # elif params['dataset'] in ['real_C1_2D', 'real_C2_2D', 'real_C3_2D', 'real_C4_2D', 'real_C5_2D', 'real_T1_2D', 'real_T2_2D', 'real_T3_2D', 'real_T4_2D', 'real_T5_2D', 'real_G1_2D', 'real_G2_2D']:
+    #     chosen_dataset = create_dataset_real_2D(params, dataset_name = f"{params['data_split']}_set_{params['dataset']}.pkl")
+    # return chosen_dataset
+    _, val_data, test_data = dataset_deets(params)
+    if params['data_split']=='val':
+        chosen_dataset = val_data
+    elif params['data_split']=='test':
+        chosen_dataset = test_data
     return chosen_dataset
 
 # -------------------------------------------------------------------------------------------------

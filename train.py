@@ -85,6 +85,67 @@
 # CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest --store-dir=20201029_arun_testdistributed_CTsplittrain_CTsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
 # Expt 2 replacement - lr=1e-4, training on training on C1,C2,C3,T1,T2 + simulations and testing on C4,C5,T3,T4,T5
 # CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest_andregular --store-dir=20201029_arun_testdistributed_CTsplittrain_CTsplittest_andregular --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest_andregular --store-dir=20201029_arun_testdistributed_CTsplittrain_CTsplittest_andregular --save-test-val-results --resume --checkpoint=checkpoints/20201029_arun_testdistributed_CTsplittrain_CTsplittest_andregular/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 10.160.199.26
+# Expt 0 interference - lr=1e-4, training on training on C1,C2,C3,T1,T2 + simulations and testing on C4,C5,T3,T4,T5
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_interference_testdistributed_CTsplittrain_CTsplittest_andregular --store-dir=20201029_arun_interference_testdistributed_CTsplittrain_CTsplittest_andregular --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_interference_testdistributed_CTsplittrain_CTsplittest_andregular --store-dir=20201029_arun_interference_testdistributed_CTsplittrain_CTsplittest_andregular --save-test-val-results --resume --checkpoint=checkpoints/20201029_arun_testdistributed_CTsplittrain_CTsplittest_andregular/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 10.160.199.26 - 2020-10-31
+# Expt 0 - lr=1e-4, training on C2,C3,T2,T3,T4 and testing on C1,C4,C5,T1,T5
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittest --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_testdistributed_CTsplittrain_CTsplittest/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 1 - lr=1e-4, training on C2,C3,T2,T3,T4 + simulations and testing on C1,C4,C5,T1,T5
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittestandregular --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittest --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittestandregular --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittestandregular --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_testdistributed_CTsplittrain_CTsplittestandregular/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - lr=1e-4, training on C2,C3,T2,T3,T4 and testing on C1,C4,C5,T1,T5  - interference
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest_interference --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittest_interference --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittest_interference --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittest_interference --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_testdistributed_CTsplittrain_CTsplittest_interference/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 3 - lr=1e-4, training on C2,C3,T2,T3,T4 + simulations and testing on C1,C4,C5,T1,T5 - interference
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittestandregular_interference --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittestandregular_interference --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_testdistributed_CTsplittrain_CTsplittestandregular_interference --store-dir=20201031_arun_testdistributed_CTsplittrain_CTsplittestandregular_interference --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_testdistributed_CTsplittrain_CTsplittestandregular_interference/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - lr=1e-4, training on sim data
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_interference --store-dir=20201031_arun_interference --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_interference --store-dir=20201031_arun_interference --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_interference/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 10.160.199.26 - 2020-11-01
+# Expt 2 - lr=1e-4, training on forward looking --exact-- data
+# CUDA_VISIBLE_DEVICES=2 python train.py --gspu-ids 0 --dataset=arun_fwd_exact --store-dir=20201101_arun_fwd_exact --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_fwd_exact --store-dir=20201101_arun_fwd_exact --save-test-val-results --resume --checkpoint=checkpoints/20201101_arun_fwd_exact/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 3 - lr=1e-4, training on forward looking --generated-- data
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_fwd_generated --store-dir=20201031_arun_fwd_generated --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=3 python train.py --gpu-ids 0 --dataset=arun_fwd_generated --store-dir=20201031_arun_fwd_generated --save-test-val-results --resume --checkpoint=checkpoints/20201031_arun_fwd_generated/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 0 - lr=1e-4, training on forward looking --exact-- data
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_fwd_exact --store-dir=20201101_arun_fwd_exact_fftloss --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1andfftloss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_fwd_exact --store-dir=20201101_arun_fwd_exact_fftloss --save-test-val-results --resume --checkpoint=checkpoints/20201101_arun_fwd_exact_fftloss/best_model.pt  --architecture=unetsar_arun --criterion-g=l1andfftloss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 1 - lr=1e-4, training on forward looking --generated-- data
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_fwd_generated --store-dir=20201101_arun_fwd_generated_fftloss --save-test-val-results  --architecture=unetsar_arun --criterion-g=l1andfftloss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_fwd_generated --store-dir=20201101_arun_fwd_generated_fftloss --save-test-val-results --resume --checkpoint=checkpoints/20201101_arun_fwd_generated_fftloss/best_model.pt  --architecture=unetsar_arun --criterion-g=l1andfftloss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+## 10.160.199.26 - 2020-11-02
+# Expt 0 - lr=1e-4, training on interference data
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_interference_testonfirsttwoseqs --store-dir=20201102_arun_interference_testonfirsttwoseqs --save-test-val-results                                                                                                --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=0 python train.py --gpu-ids 0 --dataset=arun_interference_testonfirsttwoseqs --store-dir=20201102_arun_interference_testonfirsttwoseqs --save-test-val-results --resume --checkpoint=checkpoints/20201102_arun_interference_testonfirsttwoseqs/best_model.pt  --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 1 - lr=1e-4, training on data with multiple missing frequencues
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates --store-dir=20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates --save-test-val-results                                                                                                                     --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=1 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates --store-dir=20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates --save-test-val-results --resume --checkpoint=checkpoints/20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates/best_model.pt    --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Expt 2 - lr=1e-4, training on data with multiple missing frequencues - random gaps
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps --store-dir=20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps --save-test-val-results                                                                                                                                 --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+# Resume
+# CUDA_VISIBLE_DEVICES=2 python train.py --gpu-ids 0 --dataset=arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps --store-dir=20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps --save-test-val-results --resume --checkpoint=checkpoints/20201102_arun_realtestdata_onlyfirsttwoseqs_multiplemissingrates_randomgamps/best_model.pt    --architecture=unetsar_arun --criterion-g=l1loss --batch-size=10 --test-batch-size=1000 --adam-lr=1e-4 --lr-step-size=100000 --epochs=1000
+
+
+
 
 import time
 import numpy as np
@@ -119,7 +180,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 # Dataset imports
 # from utils import retrieve_dataset_filenames
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular, create_dataset_arun_CTtestdistributedandregular
+from utils.dataset_deets import dataset_deets
 
 # Dataloader imports
 from torch.utils.data import DataLoader
@@ -326,61 +387,7 @@ def visualize(params, epoch, g_net, data_loader, writer):
 # -------------------------------------------------------------------------------------------------
 ## Create dataset objects to load the data
 def create_datasets(params):
-    if params['dataset']=='akshay':
-        train_data = create_dataset_akshay(params, dataset_size=50000, dataset_name = 'train_set_akshay.pkl')
-        val_data   = create_dataset_akshay(params, dataset_size=6250,  dataset_name = 'val_set_akshay.pkl')
-        test_data  = create_dataset_akshay(params, dataset_size=6250,  dataset_name = 'test_set_akshay.pkl')
-    elif params['dataset']=='arun':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'test_set_arun.pkl')
-    elif params['dataset']=='arun_realtestdata_onlyfirsttwoseqs':
-        # train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'akshay_train_set_arun.pkl', line_length=1000)
-        # val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'akshay_val_set_arun.pkl', line_length=1000)
-        # test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'akshay_test_set_real_onlyfirsttwoseqs.pkl', line_length=1000)
-    elif params['dataset']=='arun_realtestdata':
-        train_data = create_dataset_arun(params, dataset_size=50000, dataset_name = 'train_set_arun.pkl')
-        val_data   = create_dataset_arun(params, dataset_size=6250,  dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
-    elif params['dataset']=='arun_testdistributed':
-        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_set_arun_testdistributed.pkl')
-        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
-    elif params['dataset']=='arun_testdistributed_Csplittrain_Tsplittest':
-        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_Csplit_set_arun_testdistributed.pkl')
-        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_Csplit_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyTsplit.pkl')
-    elif params['dataset']=='arun_testdistributed_Tsplittrain_Csplittest':
-        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_Tsplit_set_arun_testdistributed.pkl')
-        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_Tsplit_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyCsplit.pkl')
-    elif params['dataset']=='arun_testdistributed_CTsplittrain_CTsplittest':
-        train_data = create_dataset_arun_testdistributed(params, dataset_name = 'train_CTsplit_set_arun_testdistributed.pkl')
-        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_CTsplit_set_arun_testdistributed.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_CTsplit.pkl')
-    elif params['dataset']=='arun_testdistributedandregular':
-        train_data = create_dataset_arun_testdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
-        val_data   = create_dataset_arun_testdistributed(params, dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')
-    elif params['dataset']=='arun_testdistributed_CTsplittrain_CTsplittest_andregular':
-        train_data = create_dataset_arun_CTtestdistributedandregular(params, dataset_name = 'train_set_arun.pkl')
-        val_data   = create_dataset_arun_CTtestdistributedandregular(params, dataset_name = 'val_set_arun.pkl')
-        test_data  = create_dataset_real(params, dataset_name = 'test_set_real.pkl')        
-    elif params['dataset']=='arun_2D':
-        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
-        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
-        test_data  = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'test_set_arun_2D.pkl')
-    elif params['dataset']=='arun_2D_realtestdata_onlyfirsttwoseqs':
-        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
-        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
-        test_data  = create_dataset_real_2D(params, dataset_name = 'test_set_real_onlyfirsttwoseqs_2D.pkl')
-    elif params['dataset']=='arun_2D_realtestdata':
-        train_data = create_dataset_arun_2D(params, dataset_size=50000, dataset_name = 'train_set_arun_2D.pkl')
-        val_data   = create_dataset_arun_2D(params, dataset_size=6250,  dataset_name = 'val_set_arun_2D.pkl')
-        test_data  = create_dataset_real_2D(params, dataset_name = 'test_set_real_2D.pkl')        
+    train_data, val_data, test_data = dataset_deets(params)
     return train_data, val_data, test_data
 
 

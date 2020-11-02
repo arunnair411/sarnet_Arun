@@ -8,6 +8,7 @@ from itertools import repeat
 from torch.cuda.amp import autocast
 import matplotlib.pyplot as plt
 from utils import snr_akshay
+import pickle
 
 import multiprocessing
 from multiprocessing import Pool
@@ -63,6 +64,9 @@ def eval_net(g_net, criterion_g, params, val_or_test_string, val_or_test_loader)
 def write_imgs(g_net, params, val_or_test_string, val_or_test_loader):
     # If test set results are to be stored, initialize the requisite variables
     running_counter = 0
+    input_data_list = []
+    target_output_list = []
+    preds_list = []
     with torch.no_grad():
     # with torch.set_grad_enabled(False): # Alternatively
         for i, sample in enumerate(val_or_test_loader):
@@ -80,7 +84,12 @@ def write_imgs(g_net, params, val_or_test_string, val_or_test_loader):
                 multi_pool = multiprocessing.Pool(processes=PROCESSES)
                 input_data_cpu    = input_data.cpu().numpy()
                 preds_cpu         = preds.cpu().numpy()
-                target_output_cpu = target_output.cpu().numpy()            
+                target_output_cpu = target_output.cpu().numpy()
+                
+                input_data_list.append(input_data_cpu)
+                target_output_list.append(target_output_cpu)
+                preds_list.append(preds_cpu)
+                
                 # params
                 # out_list = np.array(multi_pool.starmap(inner_loop_fn, zip(range(running_counter, running_counter + input_data.shape[0], 1),  input_data_cpu, preds_cpu, target_output_cpu, repeat(params), repeat(val_or_test_string),)))
                 # out_list = np.array(multi_pool.starmap(inner_loop_fn, zip(range(running_counter, running_counter + input_data.shape[0], input_data.shape[0]//2),  input_data_cpu[np.ix_([0, input_data.shape[0]//2])], preds_cpu[np.ix_([0, input_data.shape[0]//2])], target_output_cpu[np.ix_([0, input_data.shape[0]//2])], repeat(params), repeat(val_or_test_string),)))
@@ -90,6 +99,14 @@ def write_imgs(g_net, params, val_or_test_string, val_or_test_loader):
                 multi_pool.join()
 
             running_counter = running_counter + input_data.shape[0]
+    
+    input_data = np.concatenate(input_data_list, axis=0)
+    target_output = np.concatenate(target_output_list, axis=0)
+    predicted_output = np.concatenate(preds_list, axis=0)
+    save_dict = {}
+    save_dict['signals'], save_dict['measurements'], save_dict['outputs']  = target_output, input_data, predicted_output    
+    with open(os.path.join(params['results_dir'], val_or_test_string, 'results.pkl'), 'wb') as f:
+        pickle.dump(save_dict,f)
     return
 
 def inner_loop_fn(idx, input_data, preds, target_output, params, val_or_test_string):    

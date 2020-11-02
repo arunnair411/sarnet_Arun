@@ -100,8 +100,7 @@ class SARDataGenerator(object):
                 alpha[s,0] = alpha_s
         if self._support_dist == 'block-rootdec':
             for s in supp:
-                alpha_s = np.random.laplace(scale=1.0) \
-                          * np.array([ max(1 - 0.1*(i**0.5), 0) for i in range(len(s))])
+                alpha_s = np.random.laplace(scale=1.0) * np.array([ max(1 - 0.1*(i**0.5), 0) for i in range(len(s))])
                 alpha[s,0] = alpha_s
         return alpha
 
@@ -173,6 +172,41 @@ def generate_freq_measurements(signals, missing_rate, energy_band=(380e6, 2080e6
 
     return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]
 
+def generate_freq_measurements_randomsubsetmissing(signals, missing_rate, energy_band=(380e6, 2080e6), sampling_period=2.668e-11):
+    """
+    Inputs:
+        `signals` - Ground Truth SAR signals measured at an aperture (num_signals x 1 x d numpy array)
+        `missing_rate` - fraction of spectrum that is missing (float)
+    Keyword Inputs:
+        `energy_band` -  2-tuple containing start and end frequencies for the spectrum of the signals
+                         generated from the template (tuple of floats)
+        `sampling_period` - sampling period in seconds (float)
+    Outputs:
+        array containing all corrupted signals (num_signals x 1 x d numpy array)
+    """
+    num_signals,_,dim = signals.shape
+    sampling_freq = 1. / (sampling_period + 1e-32)
+    df = sampling_freq / dim
+
+    bandwidth = energy_band[1] - energy_band[0]
+    missing_bandwidth = round(bandwidth * missing_rate)
+    f_start = energy_band[0]
+    f_end = energy_band[1]
+    f_start_idx = np.int_(np.ceil(f_start / df))
+    f_end_idx = np.int_(np.ceil(f_end / df))
+
+    measurements = []
+    for i in range(num_signals):
+        spectrum = np.fft.fft(signals[i,0,:])
+        corrupted_spectrum = np.copy(spectrum)
+        corrupted_idxs = random.sample(range(f_start_idx, f_end_idx+1), int(np.floor(missing_rate*float(f_end_idx-f_start_idx))))
+        # pdb.set_trace()
+        corrupted_spectrum[corrupted_idxs] = 0.0+0.0j
+        corrupted_spectrum[dim // 2 + 1: dim - 1] = np.conj(corrupted_spectrum[dim // 2 - 1: 1: -1])
+        measurements.append(np.fft.ifft(corrupted_spectrum).real[:,np.newaxis])
+
+    return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]
+
 def generate_freq_measurements_2D(signals, missing_rate, energy_band=(380e6, 2080e6), sampling_period=2.668e-11):
     """
     Inputs:
@@ -238,6 +272,8 @@ def generate_freq_measurements_modified(signals, missing_rate, energy_band=(0,80
 
     return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]
 
+##################################################################################################################
+# 1
 def create_dataset_akshay(params, dataset_size=50000, dataset_name='train_set_akshay.pkl'):
     template_path = os.path.join(os.getcwd(), 'data/SimTxPulse.mat')
     # trainset_size = 50000 # Renamed to dataset_size
@@ -391,6 +427,15 @@ def create_dataset_arun_testdistributedandregular(params,  dataset_name='train_s
 def create_dataset_arun_CTtestdistributedandregular(params,  dataset_name='train_set_arun.pkl'):
     with open(os.path.join('data', dataset_name), 'rb') as f:
         dataset = pickle.load(f)
+    # signals_1, measurements_1 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    # if 'interference' in dataset_name:
+    #     with open(os.path.join('data', f"{dataset_name.split('_')[0]}_interference_CTsplit_{'_'.join(dataset_name.split('_')[2:])}"), 'rb') as f:
+    #         dataset = pickle.load(f)
+    # else:
+    #     with open(os.path.join('data', f"{dataset_name.split('_')[0]}_CTsplit_{'_'.join(dataset_name.split('_')[1:])}"), 'rb') as f:
+    #         dataset = pickle.load(f)        
+    # signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
     signals_1, measurements_1 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
     with open(os.path.join('data', f"{dataset_name.split('_')[0] }_CTsplit_set_arun_testdistributed.pkl"), 'rb') as f:
         dataset = pickle.load(f)
@@ -632,3 +677,100 @@ def create_dataset_real_2D(params, dataset_name='test_set_real_2D.pkl'):
     print('Loaded Real Dataset')           
 
     return gen_dataset
+##################################################################################################################
+def create_arun_testdistributed_CTsplittrain_CTsplittest(params, with_regular = False, dataset_name = 'train_CTsplit_set_arun_testdistributed.pkl'):
+    # Test data is handled separately
+    if dataset_name.split('_')[0]=='test':
+        input_dataset_names = ['test_set_real_C1.pkl', 'test_set_real_C4.pkl', 'test_set_real_C5.pkl', 'test_set_real_T1.pkl', 'test_set_real_T5.pkl']
+        signals_list = []
+        measurements_list = []
+        for input_dataset_name in input_dataset_names:
+            with open(os.path.join('data', input_dataset_name), 'rb') as f:
+                dataset = pickle.load(f)
+            signals_list.append(torch.Tensor(dataset['signals']))
+            measurements_list.append(torch.Tensor(dataset['measurements']))
+        signals, measurements = torch.cat(signals_list, 0), torch.cat(measurements_list, 0)
+    # Train/Val data handling
+    else:
+        with open(os.path.join('data', dataset_name), 'rb') as f:
+            dataset = pickle.load(f)
+        signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+        if with_regular:
+            with open(os.path.join('data', dataset_name.split('_')[0]+'_set_arun.pkl'), 'rb') as f:
+                dataset = pickle.load(f)
+            signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+            signals = torch.cat((signals, signals_2),0)
+            measurements = torch.cat((measurements, measurements_2),0)
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+
+    return gen_dataset
+
+
+def create_arun_testdistributed_CTsplittrain_CTsplittest_interference(params, with_regular = False, dataset_name = 'train_interference_CTsplit_set_arun_testdistributed.pkl'):
+    # Test data is handled separately
+    # if dataset_name.split('_')[0]=='test':
+    #     input_dataset_names = ['test_set_real_C1.pkl', 'test_set_real_C4.pkl', 'test_set_real_C5.pkl', 'test_set_real_T1.pkl', 'test_set_real_T5.pkl']
+    #     signals_list = []
+    #     measurements_list = []
+    #     for input_dataset_name in input_dataset_names:
+    #         with open(os.path.join('data', input_dataset_name), 'rb') as f:
+    #             dataset = pickle.load(f)
+    #         signals_list.append(torch.Tensor(dataset['signals']))
+    #         measurements_list.append(torch.Tensor(dataset['measurements']))
+    #     signals, measurements = torch.cat(signals_list, 0), torch.cat(measurements_list, 0)
+      
+    # Train/Val/Test data handling is unified - dumped test data into a pkl file
+    # else:
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    if with_regular:
+        with open(os.path.join('data', dataset_name.split('_')[0]+'_interference_set_arun.pkl'), 'rb') as f:
+            dataset = pickle.load(f)
+        signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+
+        signals = torch.cat((signals, signals_2),0)
+        measurements = torch.cat((measurements, measurements_2),0)
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+
+    return gen_dataset
+
+def create_arun_interference(params, dataset_name = 'train_interference_set_arun.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+    
+    return gen_dataset
+
+def create_dataset_arun_fwd(params, dataset_name = 'train_fwd_exact_set_arun.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+    return gen_dataset
+    
+def create_dataset_arun_multiplemissingrates(params, dataset_name = 'train_set_arun_multiplemissingrates.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals, measurements = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+    return gen_dataset    

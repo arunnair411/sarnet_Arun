@@ -15,3 +15,4 @@ def snr_akshay(truth, x_in, x_out):
     avg_snr_out = np.mean(snr_out)
     avg_snr_gain = avg_snr_out - avg_snr_in
     return avg_snr_in, avg_snr_out, avg_snr_gain
+

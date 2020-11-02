@@ -45,6 +45,7 @@ elif mode == 'val_CTsplit':
     inner_loop_total = 1250
     seed = 700    
 
+
 # dim = 1000
 dim = 1024
 max_sparse=50 # Don't think this really matters... only want the dictionary
@@ -56,10 +57,12 @@ num_omp_coefs = 50
 results_snr = {}
 
 template_path = 'data/SimTxPulse.mat'
-template = sio.loadmat(template_path)['st']
+template = sio.loadmat(template_path)['st'] # (600, 1) size
+peak_idx = np.argmax(np.squeeze(template))
 padded_template = np.concatenate([template, np.zeros((dim-template.shape[0],1))], axis=0)
-padded_template = padded_template.T[:,np.newaxis,:]
-corrupted_atom = np.squeeze(generate_freq_measurements(padded_template, missing_rate))[:,np.newaxis]
+padded_template_circshifted = np.roll(padded_template, (-peak_idx, 0), (0,1))
+padded_template_circshifted = padded_template_circshifted.T[:,np.newaxis,:]
+corrupted_atom = np.squeeze(generate_freq_measurements(padded_template_circshifted, missing_rate))[:,np.newaxis]
 
 corrupted_data_gen = SARDataGenerator(corrupted_atom,
                                       dim=dim,
@@ -68,7 +71,14 @@ corrupted_data_gen = SARDataGenerator(corrupted_atom,
                                       support_dist=support_dist,
                                       scale=scale)
 
-datagen = SARDataGenerator(template,
+# datagen = SARDataGenerator(template,
+#                            dim=dim,
+#                            max_sparse=max_sparse,
+#                            sparsity_pattern=sparsity_pattern,
+#                            support_dist=support_dist,
+#                            scale=scale)
+
+datagen = SARDataGenerator(np.squeeze(padded_template_circshifted.T)[:, np.newaxis], # change template to np.squeeze(padded_template.T)[:, np.newaxis] - need it to be (..., -1)
                            dim=dim,
                            max_sparse=max_sparse,
                            sparsity_pattern=sparsity_pattern,
@@ -93,8 +103,11 @@ if mode in ['train_Csplit', 'val_Csplit']:
     dataset_names = dataset_names[0:5]
 elif mode in ['train_Tsplit', 'val_Tsplit']:
     dataset_names = dataset_names[5:]
-elif mode in ['train_CTsplit', 'val_CTsplit']:
-    dataset_names = dataset_names[0:3] + dataset_names[5:7]
+# c2, c3, T2, T3, T4 for training in _CTsplit, rest for testing
+elif mode == 'train_CTsplit':
+    dataset_names = [dataset_names[1], dataset_names[2],  dataset_names[6], dataset_names[7], dataset_names[8]]
+elif mode == 'val_CTsplit':
+    dataset_names = [dataset_names[0], dataset_names[3], dataset_names[4], dataset_names[5], dataset_names[9]]
 
 random.seed(seed)
 np.random.seed(seed)
@@ -110,19 +123,24 @@ for dataset_name in dataset_names:
     for iter_idx in tqdm(range(inner_loop_total)): # Process each file 5000 times
         # Choose a certain column of it
         col_idx = random.randint(0,preds.shape[0]-1)
+        # pdb.set_trace()
         # Normalize by a random multiplier of the l2-norm
         multiplier = np.linalg.norm(signals_loaded[col_idx,0], 2, axis=0)
         # random_multiplier = random.random()*0.5 + 0.25 # Changed this
         random_multiplier = random.random() + 0.25
         temp = preds[col_idx,0] * 1. / (random_multiplier * multiplier)
-        # cyclically move it around by +-150 points
-        roll_idx = random.randint(-150, 150)
+        # cyclically move it around by +-150 points # OLD
+        # Move it till the beginning or the end
+        beginning_idx = np.argmax(np.abs(temp)>0.01)
+        end_idx = np.argmax(np.abs(temp[::-1])>0.01)
+        roll_idx = random.randint(-beginning_idx+50, end_idx-50)
         temp = np.roll(temp, roll_idx)
         if random.random()>0.5: # Possibly invert it
             temp = -temp
         signals[count,0,:] = temp
         count+=1
-measurements = generate_freq_measurements(signals, missing_rate)        
+pdb.set_trace()
+measurements = generate_freq_measurements(signals, missing_rate)
 
 save_dict = {}
 save_dict['signals'], save_dict['measurements'] = signals, measurements
