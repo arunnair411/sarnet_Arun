@@ -143,7 +143,7 @@ def dataset_deets(params):
         train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_randomgaps_50.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_50.pkl',
          'train_set_arun_extended_randomgaps_60.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_60.pkl',
          'train_set_arun_extended_randomgaps_70.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_70.pkl',
-         'train_set_arun_extended_randomgaps_80.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_80.pkl'
+         'train_set_arun_extended_randomgaps_80.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_80.pkl',
          'train_set_arun_extended_randomgaps_90.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_90.pkl'])
         val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_randomgaps_50.pkl', 'val_set_arun_generative_modeled_randomgaps_50.pkl',
         'val_set_arun_randomgaps_60.pkl', 'val_set_arun_generative_modeled_randomgaps_60.pkl',
@@ -157,7 +157,7 @@ def dataset_deets(params):
         train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_blockgaps_50.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_50.pkl',
          'train_set_arun_extended_blockgaps_60.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_60.pkl',
          'train_set_arun_extended_blockgaps_70.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_70.pkl',
-         'train_set_arun_extended_blockgaps_80.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_80.pkl'
+         'train_set_arun_extended_blockgaps_80.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_80.pkl',
          'train_set_arun_extended_blockgaps_90.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_90.pkl'])
         val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_blockgaps_50.pkl', 'val_set_arun_generative_modeled_blockgaps_50.pkl',
         'val_set_arun_blockgaps_60.pkl', 'val_set_arun_generative_modeled_blockgaps_60.pkl',
