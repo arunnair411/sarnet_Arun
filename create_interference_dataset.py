@@ -31,31 +31,34 @@ def add_interference(signals, is_train, chosen_snr=False):
 
 
 if __name__ == '__main__':
-    ## CODE BLOCK 1 - For non-sepcific SNR train and test data
-    # # dataset_name, is_train = 'train_CTsplit_set_arun_testdistributed.pkl', True
-    # # dataset_name, is_train = 'val_CTsplit_set_arun_testdistributed.pkl', True
-    # # dataset_name, is_train = 'test_CTsplit_set_arun_testdistributed.pkl', True
-    # # dataset_name, is_train = 'train_set_arun.pkl', True
-    # # dataset_name, is_train = 'val_set_arun.pkl', False
-    # # dataset_name, is_train = 'test_set_arun.pkl', False
-    # dataset_name, is_train = 'test_set_real_onlyfirsttwoseqs.pkl', False
+    # ## CODE BLOCK 1 - For non-sepcific SNR train and test data
+    # # # Old-----------------------------------------------------------------------
+    # # # dataset_name, is_train = 'train_CTsplit_set_arun_testdistributed.pkl', True
+    # # # dataset_name, is_train = 'val_CTsplit_set_arun_testdistributed.pkl', True
+    # # # dataset_name, is_train = 'test_CTsplit_set_arun_testdistributed.pkl', True
+    # # # dataset_name, is_train = 'train_set_arun.pkl', True
+    # # # dataset_name, is_train = 'test_set_arun.pkl', False
+    # # # Relevant------------------------------------------------------------------
+    # # dataset_names, is_train = ['train_set_arun_extended.pkl', 'train_set_arun_generative_modeled_extended.pkl'], True 
+    # # dataset_names, is_train = ['val_set_arun.pkl', 'val_set_arun_generative_modeled.pkl'], False
+    # # dataset_names, is_train = ['test_set_real_onlyfirsttwoseqs.pkl'], False
     
-    # with open(os.path.join('data', dataset_name), 'rb') as f:
-    #     dataset = pickle.load(f)
-    # signals = dataset['signals']
-    # pdb.set_trace()
-    # measurements = add_interference(signals, is_train=is_train)
-    # save_dict = {}
-    # save_dict['signals'], save_dict['measurements'] = signals, measurements
-    # # pdb.set_trace()
-    # with open(os.path.join('data', "_".join(dataset_name.split('_')[0:1]+['interference']+dataset_name.split('_')[1:])), 'wb') as f:
-    #     pickle.dump(save_dict,f)
+    # for dataset_name in dataset_names:   
+    #     with open(os.path.join('data', dataset_name), 'rb') as f:
+    #         dataset = pickle.load(f)                    
+    #     signals = dataset['signals']    
+    #     measurements = add_interference(signals, is_train=is_train)
+    #     save_dict = {}
+    #     save_dict['signals'], save_dict['measurements'] = signals, measurements 
+    #     # pdb.set_trace()
+    #     with open(os.path.join('data', "_".join(dataset_name.split('_')[0:1]+['interference']+dataset_name.split('_')[1:])), 'wb') as f:
+    #         pickle.dump(save_dict,f)
 
-    ## CODE BLOCK 2 For SNR Specific test data
+    # CODE BLOCK 2 For SNR Specific test data
     snr_list = [-15, -10, -5, 0, 5, 10]
     for curr_snr in snr_list:
-        dataset_name, is_train = 'val_set_arun.pkl', False
-        # dataset_name, is_train = 'test_set_real_onlyfirsttwoseqs.pkl', False
+        # dataset_name, is_train = 'val_set_arun.pkl', False
+        dataset_name, is_train = 'test_set_real_onlyfirsttwoseqs.pkl', False
         with open(os.path.join('data', dataset_name), 'rb') as f:
             dataset = pickle.load(f)
         signals = dataset['signals']
@@ -64,6 +67,5 @@ if __name__ == '__main__':
         save_dict['signals'], save_dict['measurements'] = signals, measurements        
         output_filename = "_".join(dataset_name.split('_')[0:1]+['interference']+dataset_name.split('_')[1:])
         output_filename = output_filename[:-4]+'_'+str(curr_snr)+output_filename[-4:]
-        pdb.set_trace()
         with open(os.path.join('data', output_filename), 'wb') as f:
             pickle.dump(save_dict,f)        

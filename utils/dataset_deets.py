@@ -1,5 +1,5 @@
 import pdb
-from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular, create_arun_testdistributed_CTsplittrain_CTsplittest, create_arun_testdistributed_CTsplittrain_CTsplittest_interference, create_arun_interference, create_dataset_arun_fwd, create_dataset_arun_multiplemissingrates
+from data import create_dataset_akshay, create_dataset_arun, create_dataset_real, create_dataset_arun_2D, create_dataset_real_2D, create_dataset_arun_testdistributed, create_dataset_arun_testdistributedandregular, create_arun_testdistributed_CTsplittrain_CTsplittest, create_arun_testdistributed_CTsplittrain_CTsplittest_interference, create_arun_interference, create_dataset_arun_fwd, create_dataset_arun_multiplemissingrates, generic_dataset_loader, create_dataset_arun_generative
 
 def dataset_deets(params):
     if params['dataset']=='akshay':
@@ -123,5 +123,49 @@ def dataset_deets(params):
         missing_percentage = params['dataset'].split('_')[-1]
         val_data   = create_dataset_arun_multiplemissingrates(params, dataset_name = 'val_set_arun_multiplemissingrates_randomgaps_' + missing_percentage + '.pkl')
         test_data  = create_dataset_arun_multiplemissingrates(params, dataset_name = 'test_real_onlyfirsttwoseqs_set_arun_multiplemissingrates_randomgaps_' + missing_percentage + '.pkl')        
+    elif params['dataset']=='arun_generative_modeled_realtestdata_onlyfirsttwoseqs':
+        train_data = create_dataset_arun_generative(params, dataset_name = 'train_set_arun_generative_modeled.pkl')
+        val_data   = create_dataset_arun_generative(params, dataset_name = 'val_set_arun_generative_modeled.pkl')        
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs':
+        train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended.pkl', 'train_set_arun_generative_modeled_extended.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun.pkl', 'val_set_arun_generative_modeled.pkl'])        
+        test_data  = create_dataset_real(params, dataset_name = 'test_set_real_onlyfirsttwoseqs.pkl')
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_interference':
+        train_data = generic_dataset_loader(params, dataset_names = ['train_interference_set_arun_extended.pkl', 'train_interference_set_arun_generative_modeled_extended.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = ['val_interference_set_arun.pkl', 'val_interference_set_arun_generative_modeled.pkl'])
+        test_data  = generic_dataset_loader(params, dataset_name = 'test_interference_set_real_onlyfirsttwoseqs.pkl')        
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps':
+        train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_randomgaps_50.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_50.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_randomgaps_50.pkl', 'val_set_arun_generative_modeled_randomgaps_50.pkl'])
+        test_data  = generic_dataset_loader(params, dataset_name = 'test_set_real_onlyfirsttwoseqs_randomgaps_50.pkl')                
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_allrates':
+        train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_randomgaps_50.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_50.pkl',
+         'train_set_arun_extended_randomgaps_60.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_60.pkl',
+         'train_set_arun_extended_randomgaps_70.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_70.pkl',
+         'train_set_arun_extended_randomgaps_80.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_80.pkl'
+         'train_set_arun_extended_randomgaps_90.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_90.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_randomgaps_50.pkl', 'val_set_arun_generative_modeled_randomgaps_50.pkl',
+        'val_set_arun_randomgaps_60.pkl', 'val_set_arun_generative_modeled_randomgaps_60.pkl',
+        'val_set_arun_randomgaps_70.pkl', 'val_set_arun_generative_modeled_randomgaps_70.pkl',
+        'val_set_arun_randomgaps_80.pkl', 'val_set_arun_generative_modeled_randomgaps_80.pkl',
+        'val_set_arun_randomgaps_90.pkl', 'val_set_arun_generative_modeled_randomgaps_90.pkl'])
+        test_data  = generic_dataset_loader(params, dataset_names = ['test_set_real_onlyfirsttwoseqs_randomgaps_50.pkl',
+        'test_set_real_onlyfirsttwoseqs_randomgaps_60.pkl', 'test_set_real_onlyfirsttwoseqs_randomgaps_70.pkl', 
+        'test_set_real_onlyfirsttwoseqs_randomgaps_80.pkl', 'test_set_real_onlyfirsttwoseqs_randomgaps_90.pkl'])
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates':
+        train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_blockgaps_50.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_50.pkl',
+         'train_set_arun_extended_blockgaps_60.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_60.pkl',
+         'train_set_arun_extended_blockgaps_70.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_70.pkl',
+         'train_set_arun_extended_blockgaps_80.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_80.pkl'
+         'train_set_arun_extended_blockgaps_90.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_90.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_blockgaps_50.pkl', 'val_set_arun_generative_modeled_blockgaps_50.pkl',
+        'val_set_arun_blockgaps_60.pkl', 'val_set_arun_generative_modeled_blockgaps_60.pkl',
+        'val_set_arun_blockgaps_70.pkl', 'val_set_arun_generative_modeled_blockgaps_70.pkl',
+        'val_set_arun_blockgaps_80.pkl', 'val_set_arun_generative_modeled_blockgaps_80.pkl',
+        'val_set_arun_blockgaps_90.pkl', 'val_set_arun_generative_modeled_blockgaps_90.pkl'])
+        test_data  = generic_dataset_loader(params, dataset_names = ['test_set_real_onlyfirsttwoseqs_blockgaps_50.pkl',
+        'test_set_real_onlyfirsttwoseqs_blockgaps_60.pkl', 'test_set_real_onlyfirsttwoseqs_blockgaps_70.pkl', 
+        'test_set_real_onlyfirsttwoseqs_blockgaps_80.pkl', 'test_set_real_onlyfirsttwoseqs_blockgaps_90.pkl'])        
     # pdb.set_trace()
     return train_data, val_data, test_data

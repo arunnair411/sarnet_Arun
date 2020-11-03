@@ -3,6 +3,7 @@ import numpy as np
 import scipy.io as sio
 import torch
 import sklearn.preprocessing
+from normalize_easy import normc
 
 class SARDataGenerator(object):
 
@@ -368,8 +369,10 @@ def create_dataset_arun(params, dataset_size=50000, dataset_name='train_set_arun
             # Normalize by a random multiplier of the l2-norm
             multiplier = np.linalg.norm(signals[idx,0], 2, axis=0)
             # random_multiplier = random.random()*0.5 + 0.25 # Changed this
-            random_multiplier = random.random() + 0.25
+            # random_multiplier = random.random() + 0.25
+            random_multiplier = 1.0 # 2020-11-03 - changed this to make it all unit norm...
             signals[idx,0] = signals[idx,0] * 1. / (random_multiplier * multiplier)
+            
 
         measurements = generate_freq_measurements(signals, missing_rate)
 
@@ -774,3 +777,37 @@ def create_dataset_arun_multiplemissingrates(params, dataset_name = 'train_set_a
     gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
     print('Loaded Dataset')
     return gen_dataset    
+
+
+def create_dataset_arun_generative(params, dataset_name = 'train_set_arun_generative_modeled.pkl'):
+    with open(os.path.join('data', dataset_name), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_1, measurements_1 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])
+    with open(os.path.join('data', f"{dataset_name.split('_')[0]}_set_arun.pkl"), 'rb') as f:
+        dataset = pickle.load(f)
+    signals_2, measurements_2 = torch.Tensor(dataset['signals']), torch.Tensor(dataset['measurements'])    
+    signals = torch.cat((signals_1, signals_2), axis=0)    
+    measurements = torch.cat((measurements_1, measurements_2), axis=0)    
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+    return gen_dataset
+
+
+def generic_dataset_loader(params, dataset_names):
+    signals_list = []
+    measurements_list = []
+    for dataset_name in dataset_names:
+        with open(os.path.join('data', dataset_name), 'rb') as f:
+            dataset = pickle.load(f)        
+        signals_list.append(torch.Tensor(dataset['signals']))
+        measurements_list.append(torch.Tensor(dataset['measurements']))
+    signals = torch.cat(signals_list, axis=0)
+    measurements = torch.cat(measurements_list, axis=0)
+
+    print(f"Dimensions of signals tensor is {signals.shape}")
+    print(f"Dimensions of measurements tensor is {measurements.shape}")        
+    gen_dataset = torch.utils.data.TensorDataset(signals, measurements)
+    print('Loaded Dataset')
+    return gen_dataset
