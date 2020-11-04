@@ -135,11 +135,19 @@ def dataset_deets(params):
         train_data = generic_dataset_loader(params, dataset_names = ['train_interference_set_arun_extended.pkl', 'train_interference_set_arun_generative_modeled_extended.pkl'])
         val_data   = generic_dataset_loader(params, dataset_names = ['val_interference_set_arun.pkl', 'val_interference_set_arun_generative_modeled.pkl'])
         test_data  = generic_dataset_loader(params, dataset_name = 'test_interference_set_real_onlyfirsttwoseqs.pkl')        
+    elif params['dataset'] in ['arun_extended_and_generative_testononlyfirsttwoseqs_interference_-15', 'arun_extended_and_generative_testononlyfirsttwoseqs_interference_-10', 
+    'arun_extended_and_generative_testononlyfirsttwoseqs_interference_-5', 'arun_extended_and_generative_testononlyfirsttwoseqs_interference_0', 
+    'arun_extended_and_generative_testononlyfirsttwoseqs_interference_5', 'arun_extended_and_generative_testononlyfirsttwoseqs_interference_10', 'arun_extended_and_generative_testononlyfirsttwoseqs_interference_15']:
+        # NOTE: these are test sets. train doesn't matter... so setting it to test set value so it's loaded quickly
+        snr_string = params['dataset'].split('_')[-1]
+        train_data = generic_dataset_loader(params, dataset_names = [f'test_interference_set_real_onlyfirsttwoseqs_{snr_string}.pkl'])        
+        val_data   = generic_dataset_loader(params, dataset_names = [f'val_interference_set_arun_{snr_string}.pkl', f'val_interference_set_arun_generative_modeled_{snr_string}.pkl'])
+        test_data  = generic_dataset_loader(params, dataset_names = [f'test_interference_set_real_onlyfirsttwoseqs_{snr_string}.pkl'])            
     elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps':
         train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_randomgaps_50.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_50.pkl'])
         val_data   = generic_dataset_loader(params, dataset_names = ['val_set_arun_randomgaps_50.pkl', 'val_set_arun_generative_modeled_randomgaps_50.pkl'])
         test_data  = generic_dataset_loader(params, dataset_name = 'test_set_real_onlyfirsttwoseqs_randomgaps_50.pkl')                
-    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_allrates':
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_allrates': #####################################################
         train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_randomgaps_50.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_50.pkl',
          'train_set_arun_extended_randomgaps_60.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_60.pkl',
          'train_set_arun_extended_randomgaps_70.pkl', 'train_set_arun_generative_modeled_extended_randomgaps_70.pkl',
@@ -153,7 +161,14 @@ def dataset_deets(params):
         test_data  = generic_dataset_loader(params, dataset_names = ['test_set_real_onlyfirsttwoseqs_randomgaps_50.pkl',
         'test_set_real_onlyfirsttwoseqs_randomgaps_60.pkl', 'test_set_real_onlyfirsttwoseqs_randomgaps_70.pkl', 
         'test_set_real_onlyfirsttwoseqs_randomgaps_80.pkl', 'test_set_real_onlyfirsttwoseqs_randomgaps_90.pkl'])
-    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates':
+    elif params['dataset'] in ['arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_50', 'arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_60',
+    'arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_70', 'arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_80', 'arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_90']:
+        missing_percentage = params['dataset'].split('_')[-1]
+        # NOTE: these are test sets. train doesn't matter... so setting it to test set value so it's loaded quickly
+        train_data = generic_dataset_loader(params, dataset_names = [f'test_set_real_onlyfirsttwoseqs_randomgaps_{missing_percentage}.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = [f'val_set_arun_randomgaps_{missing_percentage}.pkl', f'val_set_arun_generative_modeled_randomgaps_{missing_percentage}.pkl'])
+        test_data = generic_dataset_loader(params, dataset_names = [f'test_set_real_onlyfirsttwoseqs_randomgaps_{missing_percentage}.pkl'])        
+    elif params['dataset']=='arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates':#####################################################
         train_data = generic_dataset_loader(params, dataset_names = ['train_set_arun_extended_blockgaps_50.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_50.pkl',
          'train_set_arun_extended_blockgaps_60.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_60.pkl',
          'train_set_arun_extended_blockgaps_70.pkl', 'train_set_arun_generative_modeled_extended_blockgaps_70.pkl',
@@ -166,6 +181,13 @@ def dataset_deets(params):
         'val_set_arun_blockgaps_90.pkl', 'val_set_arun_generative_modeled_blockgaps_90.pkl'])
         test_data  = generic_dataset_loader(params, dataset_names = ['test_set_real_onlyfirsttwoseqs_blockgaps_50.pkl',
         'test_set_real_onlyfirsttwoseqs_blockgaps_60.pkl', 'test_set_real_onlyfirsttwoseqs_blockgaps_70.pkl', 
-        'test_set_real_onlyfirsttwoseqs_blockgaps_80.pkl', 'test_set_real_onlyfirsttwoseqs_blockgaps_90.pkl'])        
+        'test_set_real_onlyfirsttwoseqs_blockgaps_80.pkl', 'test_set_real_onlyfirsttwoseqs_blockgaps_90.pkl'])
+    elif params['dataset'] in ['arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_50', 'arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_60',
+    'arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_70', 'arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_80', 'arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_90']:
+        missing_percentage = params['dataset'].split('_')[-1]
+        # NOTE: these are test sets. train doesn't matter... so setting it to test set value so it's loaded quickly
+        train_data = generic_dataset_loader(params, dataset_names = [f'test_set_real_onlyfirsttwoseqs_blockgaps_{missing_percentage}.pkl'])
+        val_data   = generic_dataset_loader(params, dataset_names = [f'val_set_arun_blockgaps_{missing_percentage}.pkl', f'val_set_arun_generative_modeled_blockgaps_{missing_percentage}.pkl'])
+        test_data = generic_dataset_loader(params, dataset_names = [f'test_set_real_onlyfirsttwoseqs_blockgaps_{missing_percentage}.pkl'])
     # pdb.set_trace()
     return train_data, val_data, test_data

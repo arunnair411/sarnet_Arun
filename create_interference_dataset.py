@@ -58,7 +58,8 @@ if __name__ == '__main__':
     snr_list = [-15, -10, -5, 0, 5, 10]
     for curr_snr in snr_list:
         # dataset_name, is_train = 'val_set_arun.pkl', False
-        dataset_name, is_train = 'test_set_real_onlyfirsttwoseqs.pkl', False
+        dataset_name, is_train = 'val_set_arun_generative_modeled.pkl', False
+        # dataset_name, is_train = 'test_set_real_onlyfirsttwoseqs.pkl', False
         with open(os.path.join('data', dataset_name), 'rb') as f:
             dataset = pickle.load(f)
         signals = dataset['signals']
