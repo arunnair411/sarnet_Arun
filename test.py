@@ -107,6 +107,14 @@
 ## BLOCKGAPMISSING - specific missing rate
 # CUDA_VISIBLE_DEVICES=3 python test.py --gpu-ids 0 --dataset=arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_50            --data-split=test --store-dir=20201103_arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_50     --save-test-val-results --checkpoint=checkpoints/20201103_arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates/best_model.pt   --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
 
+## INTERFERENCE - specific SNR
+# CUDA_VISIBLE_DEVICES=0 python test.py --gpu-ids 0 --dataset=arun_extended_and_generative_testononlyfirsttwoseqs_interference                   --data-split=val --store-dir=20201108_temp     --save-test-val-results --checkpoint=checkpoints/20201103_arun_extended_and_generative_testononlyfirsttwoseqs_interference/best_model.pt            --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+## RANDOMGAPMISSING - specific missing rate
+# CUDA_VISIBLE_DEVICES=0 python test.py --gpu-ids 0 --dataset=arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_allrates            --data-split=val --store-dir=20201108_temp     --save-test-val-results --checkpoint=checkpoints/20201103_arun_extended_and_generative_testononlyfirsttwoseqs_randomgaps_allrates/best_model.pt     --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+## BLOCKGAPMISSING - specific missing rate
+# CUDA_VISIBLE_DEVICES=0 python test.py --gpu-ids 0 --dataset=arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates             --data-split=val --store-dir=20201108_temp     --save-test-val-results --checkpoint=checkpoints/20201103_arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_allrates/best_model.pt      --architecture=unetsar_arun --no-visualization --no-neuron-visualization --no-model-copy --test-batch-size=150
+
+
 import pdb
 import os, sys, glob
 import argparse, pathlib

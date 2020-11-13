@@ -208,6 +208,42 @@ def generate_freq_measurements_randomsubsetmissing(signals, missing_rate, energy
 
     return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]
 
+def generate_freq_measurements_randombandsmissing(signals, missing_rate, energy_band=(380e6, 2080e6), sampling_period=2.668e-11):
+    """
+    Inputs:
+        `signals` - Ground Truth SAR signals measured at an aperture (num_signals x 1 x d numpy array)
+        `missing_rate` - fraction of spectrum that is missing (float)
+    Keyword Inputs:
+        `energy_band` -  2-tuple containing start and end frequencies for the spectrum of the signals
+                         generated from the template (tuple of floats)
+        `sampling_period` - sampling period in seconds (float)
+    Outputs:
+        array containing all corrupted signals (num_signals x 1 x d numpy array)
+    """
+    num_signals,_,dim = signals.shape
+    sampling_freq = 1. / (sampling_period + 1e-32)
+    df = sampling_freq / dim
+
+    bandwidth = energy_band[1] - energy_band[0]
+    missing_bandwidth = round(bandwidth * missing_rate)
+    f_start = energy_band[0]
+    f_end = energy_band[1]
+    f_start_idx = np.int_(np.ceil(f_start / df))
+    f_end_idx = np.int_(np.ceil(f_end / df))
+
+    f_bands = np.array_split(range(f_start_idx, f_end_idx+1), 10)
+    measurements = []
+    for i in range(num_signals):
+        spectrum = np.fft.fft(signals[i,0,:])
+        corrupted_spectrum = np.copy(spectrum)
+        corrupted_idxs = np.concatenate(random.sample(f_bands, int(missing_rate*10)))
+        # pdb.set_trace()
+        corrupted_spectrum[corrupted_idxs] = 0.0+0.0j
+        corrupted_spectrum[dim // 2 + 1: dim - 1] = np.conj(corrupted_spectrum[dim // 2 - 1: 1: -1])
+        measurements.append(np.fft.ifft(corrupted_spectrum).real[:,np.newaxis])
+
+    return np.concatenate(measurements, axis=1).T[:,np.newaxis,:]    
+
 def generate_freq_measurements_2D(signals, missing_rate, energy_band=(380e6, 2080e6), sampling_period=2.668e-11):
     """
     Inputs:

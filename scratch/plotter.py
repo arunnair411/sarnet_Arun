@@ -22,6 +22,11 @@ with open(os.path.join('scratch', 'with_baselines', '20201103_arun_extended_and_
 with open(os.path.join('scratch', 'with_baselines', '20201103_arun_extended_and_generative_testononlyfirsttwoseqs_blockgaps_90_results.pkl'), 'rb') as f:
     dataset_gapmissing =  pickle.load(f)
 
+with open(os.path.join('scratch', 'results_randomgap_90.pkl' ), 'rb') as f: 
+    dataset_randommissing_2 =  pickle.load(f)
+
+dataset_randommissing['baseline_outputs'] = dataset_randommissing_2['outputs']
+
 from mpl_toolkits.axes_grid1 import ImageGrid, AxesGrid
 
 # common-processing
@@ -46,8 +51,8 @@ im5 = process_data(np.squeeze(dataset_randommissing['signals']).T[start_idx:end_
 # im6
 im6 = process_data(np.squeeze(dataset_randommissing['measurements']).T[start_idx:end_idx,:1800])
 # im7
-# im7 = process_data(np.squeeze(dataset_randommissing['baseline_outputs']).T[start_idx:end_idx,:1800]) # TODO: Switch to this!
-im7 = process_data(np.squeeze(dataset_randommissing['outputs']).T[start_idx:end_idx,:1800])
+im7 = process_data(np.squeeze(dataset_randommissing['baseline_outputs']).T[start_idx:end_idx,:1800]) # TODO: Switch to this!
+# im7 = process_data(np.squeeze(dataset_randommissing['outputs']).T[start_idx:end_idx,:1800])
 # im8
 im8 = process_data(np.squeeze(dataset_randommissing['outputs']).T[start_idx:end_idx,:1800])
 # im9
@@ -69,11 +74,12 @@ grid = AxesGrid(fig, (1,1,1),  # similar to subplot(111)
                 #  cbar_mode = "edge",
                  cbar_location="right",                 
                  )
+imgs_to_delete =[]
 for idx, (ax, im) in enumerate(zip(grid, [im1, im2, im3, im4, im5, im6, im7, im8, im9, im10, im11, im12])):
     if idx == 0:
         ax.set_title('Clean')
         # ax.set_ylabel('Bandlimited \n Interference', rotation=0, labelpad=10)
-        ax.set_ylabel('Bandlimited \n Interference', fontsize = 'large')
+        ax.set_ylabel('Radio Frequency \n Interference (RFI)', fontsize = 'large')
     elif idx ==1:
         ax.set_title('Noisy')
     elif idx ==2:
@@ -84,26 +90,54 @@ for idx, (ax, im) in enumerate(zip(grid, [im1, im2, im3, im4, im5, im6, im7, im8
         ax.set_ylabel('Random \n Spectral Gaps', fontsize='large')
         # ax.set_ylabel('Random \n Spectral Gaps', rotation=0, labelpad=10)
     elif idx ==8:
-        ax.set_ylabel('Block \n Spectral Gap', fontsize='large')
+        ax.set_ylabel('Centered Block\n Spectral Gap', fontsize='large')
         # ax.set_ylabel('Block \n Spectral Gap', rotation=0, labelpad=10)
 
     # Iterating over the grid returns the Axes.
-    img  = ax.imshow(im, vmin=-40, vmax=0, cmap='jet', aspect=4.0)    
+    # if idx not in [0,8]:
+    img  = ax.imshow(im, vmin=-40, vmax=0, cmap='jet', aspect=4.0)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.get_yaxis().set_ticks([])
     ax.get_xaxis().set_ticks([])
 
-    # ax.colorbar()
-    # if idx == 3 or idx ==7 or idx == 11:
-    #     plt.colorbar(img, ax=ax)
+    # # In my search to basically only show middle clean plot as the ones above and below are repeats...
+    # if idx==0 or idx == 8:
+    #     imgs_to_delete.append(img)
+    #     # ax.axis('off') # This also deletes text, so instead do the below
+    #     ax.spines["top"].set_visible(False)
+    #     ax.spines["right"].set_visible(False)
+    #     ax.spines["left"].set_visible(False)
+    #     ax.spines["bottom"].set_visible(False)        
+
+# # In my search to basically only show middle clean plot as the ones above and below are repeats...
+# for img in imgs_to_delete:
+#     img.remove()
+
 grid.cbar_axes[0].colorbar(img)
 grid.cbar_axes[0].set_title('dB', rotation=0)
+
+# Reference
+fig.text(0.133,0.536,"(e)", color ="w")
+fig.text(0.320,0.536,"(f)", color ="k")
+fig.text(0.507,0.536,"(g)", color ="w")
+fig.text(0.694,0.536,"(h)", color ="w")
+
+fig.text(0.133,0.661,"(a)", color ="w")
+fig.text(0.320,0.661,"(b)", color ="k")
+fig.text(0.507,0.661,"(c)", color ="k")
+fig.text(0.694,0.661,"(d)", color ="w")
+
+fig.text(0.133,0.411,"(i)", color ="w")
+fig.text(0.320,0.411,"(j)", color ="k")
+fig.text(0.507,0.411,"(k)", color ="w")
+fig.text(0.694,0.411,"(l)", color ="w")
+
 
 # for cax in grid.cbar_axes:
 #     cax.toggle_label(False)
 
-plt.savefig('temp.png', dpi=600)
+plt.savefig('temp.png', dpi=200)
 plt.close()
 
 ###################################################################################
@@ -134,8 +168,8 @@ data_2d = np.abs(np.fft.rfft(data_1d))[fft_idx_slice]
 
 data_3a = process_data_2(np.squeeze(dataset_randommissing['signals']))[time_idx_slice]
 data_3b = process_data_2(np.squeeze(dataset_randommissing['measurements']))[time_idx_slice]
-# data_3c = process_data_2(np.squeeze(dataset_randommissing['baseline_outputs']))[time_idx_slice]
-data_3c = process_data_2(np.squeeze(dataset_randommissing['outputs']))[time_idx_slice] # TODO
+data_3c = process_data_2(np.squeeze(dataset_randommissing['baseline_outputs']))[time_idx_slice]
+# data_3c = process_data_2(np.squeeze(dataset_randommissing['outputs']))[time_idx_slice] # TODO
 data_3d = process_data_2(np.squeeze(dataset_randommissing['outputs']))[time_idx_slice]
 
 data_4a = np.abs(np.fft.rfft(data_3a))[fft_idx_slice]
@@ -186,12 +220,12 @@ sns.set_theme()
 
 # sns.lineplot(data=data_dict_1, ax = axes[0])
 
-plt.figure(figsize=(20,10))
+fig = plt.figure(figsize=(20,10))
 plt.subplot(2,3,1)
 sns.lineplot(x='x', y='value', hue='variable', data=pd.melt(data_frame_1, ['x']))
 plt.ylabel('Magnitude')
 plt.xlabel('Sample')
-plt.title('Bandlimited Interference', fontsize = 'x-large')
+plt.title('Radio Frequency Interference (RFI)', fontsize = 'x-large')
 plt.legend([],[], frameon=False)
 plt.subplot(2,3,2)
 sns.lineplot(x='x', y='value', hue='variable', data=pd.melt(data_frame_3, ['x']))
@@ -201,9 +235,10 @@ plt.title('Random Spectral Gaps', fontsize = 'x-large')
 plt.subplot(2,3,3)
 g = sns.lineplot(x='x', y='value', hue='variable', data=pd.melt(data_frame_5, ['x']))
 plt.xlabel('Sample')
-plt.title('Block Spectral Gap', fontsize = 'x-large')
+plt.title('Centered Block Spectral Gap', fontsize = 'x-large')
 handles, labels = g.get_legend_handles_labels()
 g.legend(handles=handles[0:], labels=labels[0:]) # From https://stackoverflow.com/questions/51579215/remove-seaborn-lineplot-legend-title
+plt.legend(loc='lower left')
 plt.subplot(2,3,4)
  #https://stackoverflow.com/questions/52308749/how-do-i-create-a-multiline-plot-using-seaborn
 sns.lineplot(x='x', y='value',  hue='variable', data=pd.melt(data_frame_2, ['x']))
@@ -222,7 +257,18 @@ plt.legend([],[], frameon=False)
 plt.xlabel('Frequency (GHz)')
 plt.ylabel('')
 
-plt.savefig('temp_2.png', dpi=600)
+# Reference
+fig.text(0.133,0.845,"(a)", color ="k")
+fig.text(0.407,0.845,"(b)", color ="k")
+fig.text(0.681,0.845,"(c)", color ="k")
+
+fig.text(0.133,0.428,"(d)", color ="k")
+fig.text(0.407,0.428,"(e)", color ="k")
+fig.text(0.681,0.428,"(f)", color ="k")
+
+
+
+plt.savefig('temp_2.png', dpi=200)
 plt.close()
 
 # fmri = sns.load_dataset("fmri")
@@ -247,10 +293,12 @@ x = np.array([-15,-10,-5,0,5,10])
 data_dict_1 = {'Simulated - Baseline': data_1b, 'Simulated - UNet': data_1c, 'Real - Baseline': data_2b, 'Real - UNet': data_2c, 'x': x}
 
 data_3a = np.array([3.23, 2.54, 1.78, 1.26, 0.69])
-data_3b = np.array([5,5,5,5,5]) # TODO
+# data_3b = np.array([5,5,5,5,5])
+data_3b = np.array([21.31, 20.33,16.35,11.47,6.22])
 data_3c = np.array([22.71, 22.44, 21.74,20.94,19.24])
 data_4a = np.array([3.2,2.52,1.79,1.26,0.69])
-data_4b = np.array([6,6,6,6,6]) # TODO
+# data_4b = np.array([6,6,6,6,6]) # TODO
+data_4b = np.array([22.2, 21.71,19.71,15.83,8.77])
 data_4c = np.array([15.59,14.94,13.91,12.91,10.99])
 x = np.array([50, 60, 70, 80, 90])
 
@@ -280,12 +328,12 @@ sns.set_theme()
 
 # sns.lineplot(data=data_dict_1, ax = axes[0])
 
-plt.figure(figsize=(20,5))
+fig = plt.figure(figsize=(20,5))
 plt.subplot(1,3,1)
 g = sns.lineplot(x='x', y='value', hue='variable', marker="o", data=pd.melt(data_frame_1, ['x']), legend=False, palette=sns.color_palette()[1:3]+sns.color_palette()[4:6])
 plt.ylabel('Output SNR (dB)')
 plt.xlabel('Input SNR (dB)')
-plt.title('Bandlimited Interference', fontsize = 'x-large')
+plt.title('Radio Frequency Interference (RFI)', fontsize = 'x-large')
 plt.ylim(-7.5, 35)
 plt.subplot(1,3,2)
 g = sns.lineplot(x='x', y='value', hue='variable', marker="o", data=pd.melt(data_frame_2, ['x']), legend=False)
@@ -298,7 +346,7 @@ plt.subplot(1,3,3)
 g = sns.lineplot(x='x', y='value', hue='variable', marker="o", data=pd.melt(data_frame_3, ['x']))
 plt.ylabel('SNR (dB)')
 plt.xlabel('Missing Percentage')
-plt.title('Block Spectral Gap', fontsize = 'x-large')
+plt.title('Centered Block Spectral Gap', fontsize = 'x-large')
 plt.ylim(0, 35)
 # legend = g.legend()
 # legend.texts[0].set_text("Whatever else")
@@ -306,7 +354,13 @@ handles, labels = g.get_legend_handles_labels()
 g.legend(handles=handles[0:], labels=labels[0:]) # From https://stackoverflow.com/questions/51579215/remove-seaborn-lineplot-legend-title
 # plt.setp(g.get_legend().get_texts(), fontsize='8') # for legend text
 
-plt.savefig('temp_3.png', dpi=600)
+# Reference
+fig.text(0.133,0.795,"(a)", color ="k")
+fig.text(0.407,0.795,"(b)", color ="k")
+fig.text(0.681,0.795,"(c)", color ="k")
+
+
+plt.savefig('temp_3.png', dpi=200)
 plt.close()
 
 # fmri = sns.load_dataset("fmri")
@@ -315,3 +369,17 @@ plt.close()
 #     x="timepoint", y="signal", col="region",
 #     hue="event", style="event",
 # )
+
+## Image 4 - Simple plotting for PlotNeuralNet
+clean_data = data_frame_5['Clean'].to_numpy()
+noisy_data = data_frame_5['Noisy'].to_numpy()
+# fig = plt.figure(figsize=(9., 12.))
+fig = plt.figure()
+plt.subplot(211)
+plt.plot(clean_data)
+plt.axis("off")
+plt.subplot(212)
+plt.plot(noisy_data)
+plt.axis("off")
+plt.savefig('temp_4.png', dpi=300)
+plt.close()

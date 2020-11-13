@@ -5,20 +5,21 @@ import scipy.io as sio
 import matplotlib.pyplot as plt
 from sklearn.linear_model import OrthogonalMatchingPursuit
 import random
-from data import SARDataGenerator, generate_freq_measurements, generate_freq_measurements_randomsubsetmissing
+from data import SARDataGenerator, generate_freq_measurements, generate_freq_measurements_randomsubsetmissing, generate_freq_measurements_randombandsmissing
 # from sarnet_config import SARConfig as conf
 # from sar_utilities import snr, snr_l1
 from utils import snr_akshay
 from tqdm import tqdm
 
-case = 'block_missing' ## CASE 1 - block missing
-# case = 'random_missing' ## CASE 2 - random missing
+# case = 'block_missing' ## CASE 1 - block missing
+case = 'random_band_missing' ## CASE 2 - random bands missing
+# case = 'random_missing' ## CASE 3 - random missing
 
-case_function_dict = {'random_missing': generate_freq_measurements_randomsubsetmissing, 'block_missing': generate_freq_measurements}
-case_filename_dict = {'random_missing': 'randomgaps', 'block_missing': 'blockgaps'}
-# dataset_names, is_train = ['train_set_arun_extended.pkl', 'train_set_arun_generative_modeled_extended.pkl'], True 
+case_function_dict = {'block_missing': generate_freq_measurements, 'random_band_missing': generate_freq_measurements_randombandsmissing, 'random_missing': generate_freq_measurements_randomsubsetmissing}
+case_filename_dict = {'block_missing': 'blockgaps', 'random_band_missing': 'randombands', 'random_missing': 'randomgaps'}
+dataset_names, is_train = ['train_set_arun_extended.pkl', 'train_set_arun_generative_modeled_extended.pkl'], True 
 # dataset_names, is_train = ['val_set_arun.pkl', 'val_set_arun_generative_modeled.pkl'], False
-dataset_names, is_train = ['test_set_real_onlyfirsttwoseqs.pkl'], False
+# dataset_names, is_train = ['test_set_real_onlyfirsttwoseqs.pkl'], False
 for dataset_name in dataset_names:   
     with open(os.path.join('data', dataset_name), 'rb') as f:
         dataset = pickle.load(f)
@@ -32,3 +33,5 @@ for dataset_name in dataset_names:
         output_file_name = dataset_name.split('.')[0]
         with open(os.path.join('data', f'{output_file_name}_{case_filename_dict[case]}_{int(curr_missing_rate*100)}.pkl'), 'wb') as f:
             pickle.dump(save_dict,f)
+
+######
